@@ -1,2 +1,0 @@
-export const ROSCHINO_LONGITUDE = 29.6031;
-export const ROSCHINO_LATITUDE = 60.256511;

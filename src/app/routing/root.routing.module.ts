@@ -3,14 +3,6 @@ import { Route, RouterModule } from '@angular/router';
 
 const routes: Route[] = [
   {
-    path: 'widgets',
-    loadComponent() {
-      return import('src/pages/widgets').then(
-        imported => imported.WidgetsComponent
-      );
-    },
-  },
-  {
     path: '',
     loadComponent() {
       return import('src/pages/main').then(imported => imported.MainComponent);
@@ -25,18 +17,18 @@ const routes: Route[] = [
         },
       },
       {
-        path: 'links',
+        path: 'upload',
         loadComponent() {
-          return import('src/pages/links').then(
-            imported => imported.LinksComponent
+          return import('src/pages/upload').then(
+            imported => imported.UploadComponent
           );
         },
       },
       {
-        path: 'about',
+        path: 'settings',
         loadComponent() {
-          return import('src/pages/about').then(
-            imported => imported.AboutComponent
+          return import('src/pages/settings').then(
+            imported => imported.SettingsComponent
           );
         },
       },

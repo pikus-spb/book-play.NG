@@ -1,6 +1,6 @@
 # PikusDevSpace
 
-This is a demo project for `https://pikus-dev.space` written using `Angular Material` and that implements
+This is a demo project for `https://book-play.ru` written using `Angular Material` and that implements
 canonical `FSD - feature sliced design`
 #fsd #featuresliceddesign
 
@@ -11,4 +11,4 @@ change any of the source files.
 
 ## Online
 
-Online application is available running at `https://pikus-dev.space`
+Online application is available running at `https://book-play.ru`
