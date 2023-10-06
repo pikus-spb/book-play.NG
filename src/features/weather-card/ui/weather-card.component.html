@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon>sunny</mat-icon>
+    </div>
+    <mat-card-title>Погода</mat-card-title>
+    <mat-card-subtitle>Рядом с Рощино (Лен. область, Россия)</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <section>
+      <p>
+        Температура: <b>{{ temperature | async }}&deg;C</b>
+      </p>
+      <p>{{ weatherCode | async | weatherCodeDescription }}</p>
+    </section>
+  </mat-card-content>
+</mat-card>

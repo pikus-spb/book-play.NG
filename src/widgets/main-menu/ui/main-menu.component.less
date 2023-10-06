@@ -1,0 +1,19 @@
+@import 'src/app/styles/root';
+
+:host {
+  mat-nav-list {
+    a {
+      border-left: 3px solid transparent;
+
+      &.active {
+        border-left-color: gray;
+        background-color: @defaultHighlightColor;
+      }
+
+      mat-icon {
+        margin-right: 1rem;
+        vertical-align: bottom;
+      }
+    }
+  }
+}

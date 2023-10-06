@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <main-header (menuClick)="sidenav.toggle()"></main-header>
+</mat-toolbar>
+<mat-progress-bar
+  mode="indeterminate"
+  [style.visibility]="loading ? 'visible' : 'hidden'"></mat-progress-bar>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav opened mode="side">
+    <main-menu></main-menu>
+    <copyright></copyright>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,28 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon>wb_twilight</mat-icon>
+    </div>
+    <mat-card-title>Продолжительность дня</mat-card-title>
+    <mat-card-subtitle>Рядом с Рощино (Лен. область, Россия)</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <section>
+      <p>
+        <label>Световой день длится:</label>
+        <b
+          >{{ longitude | async | hours }} часов
+          {{ longitude | async | minutes }} минут</b
+        >
+      </p>
+      <p>
+        <label>Восход:</label>
+        <b>{{ sunrise | async }}</b>
+      </p>
+      <p>
+        <label>Закат:</label>
+        <b>{{ sunset | async }}</b>
+      </p>
+    </section>
+  </mat-card-content>
+</mat-card>

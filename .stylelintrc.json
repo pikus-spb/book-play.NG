@@ -1,0 +1,7 @@
+{
+  "extends": ["stylelint-prettier/recommended", "stylelint-config-concentric-order"],
+  "customSyntax": "postcss-less",
+  "rules": {
+    "prettier/prettier": true
+  }
+}

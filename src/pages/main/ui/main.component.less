@@ -1,0 +1,27 @@
+@import 'src/app/styles/root';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  mat-progress-bar {
+    position: absolute;
+    top: @headerHeight;
+  }
+
+  mat-sidenav-container {
+    background-color: initial;
+    height: calc(100% - @headerHeight);
+
+    mat-sidenav {
+      background-color: transparent;
+      padding: @defaultPadding * 0.6;
+      width: @mainMenuWidth;
+    }
+
+    mat-sidenav-content {
+      padding: @defaultPadding * 2;
+    }
+  }
+}
