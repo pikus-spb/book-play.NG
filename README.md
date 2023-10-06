@@ -1,4 +1,4 @@
-# PikusDevSpace
+# book-play.ru
 
 This is a demo project for `https://book-play.ru` written using `Angular Material` and that implements
 canonical `FSD - feature sliced design`
