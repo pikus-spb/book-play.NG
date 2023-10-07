@@ -11,7 +11,6 @@ import { MaterialModule, UploadButtonDirective } from 'src/shared/ui';
 })
 export class MainMenuComponent {
   fileUploaded(files?: FileList) {
-    // TODO:
     if (files && files.length > 0) {
       console.log(files[0].name);
     }
