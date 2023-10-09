@@ -17,14 +17,6 @@ const routes: Route[] = [
         },
       },
       {
-        path: 'upload',
-        loadComponent() {
-          return import('src/pages/upload').then(
-            imported => imported.UploadComponent
-          );
-        },
-      },
-      {
         path: 'settings',
         loadComponent() {
           return import('src/pages/settings').then(
