@@ -11,12 +11,12 @@ import {
 import { fromEvent, Subject, takeUntil, tap } from 'rxjs';
 
 @Directive({
-  selector: '[uploadButton]',
+  selector: '[uploadFile]',
   standalone: true,
 })
-export class UploadButtonDirective implements AfterViewInit, OnDestroy {
+export class UploadFileDirective implements AfterViewInit, OnDestroy {
   @Input() accept?: string;
-  @Output() uploadButton = new EventEmitter<FileList>();
+  @Output() uploadFile = new EventEmitter<FileList>();
 
   private fileInput: HTMLInputElement | null = null;
   private destroyed$ = new Subject<boolean>();
@@ -59,9 +59,9 @@ export class UploadButtonDirective implements AfterViewInit, OnDestroy {
   private fileChanged(event: Event): void {
     const files = (event.target as HTMLInputElement).files;
     if (files) {
-      this.uploadButton.emit(files);
+      this.uploadFile.emit(files);
     } else {
-      this.uploadButton.emit();
+      this.uploadFile.emit();
     }
   }
 

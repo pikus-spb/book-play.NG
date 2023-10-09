@@ -2,7 +2,7 @@
   <a mat-list-item routerLink="/home" routerLinkActive="active">
     <mat-icon>home</mat-icon>Главная
   </a>
-  <a mat-list-item (uploadButton)="fileUploaded($event)" [accept]="'.fb2'"
+  <a mat-list-item (uploadFile)="fileUploaded($event)" [accept]="'.fb2'"
     ><mat-icon>upload</mat-icon>Загрузить</a
   >
   <a mat-list-item routerLink="/settings" routerLinkActive="active">

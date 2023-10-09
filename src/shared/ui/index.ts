@@ -1,2 +1,2 @@
 export { MaterialModule } from './material/material.module';
-export { UploadButtonDirective } from './upload-button/upload-button.directive';
+export { UploadFileDirective } from './upload-button/upload-file.directive';
