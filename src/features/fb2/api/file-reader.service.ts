@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable()
-export class FileReaderHelperService {
+export class FileReaderService {
   public detectEncoding(file: Blob): Observable<string> {
     const result = new Subject<string>();
     const reader = new FileReader();
@@ -16,7 +16,7 @@ export class FileReaderHelperService {
     return result;
   }
 
-  public readFb2File(file: Blob, encoding: string): Observable<string> {
+  public readFile(file: Blob, encoding: string): Observable<string> {
     const result = new Subject<string>();
     const reader = new FileReader();
     reader.onload = (fileEvent: Event) => {

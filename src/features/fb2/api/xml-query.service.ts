@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
-
-export interface AuthorName {
-  first: string;
-  middle?: string;
-  last: string;
-}
+import { Author } from '../model/fb2-book.types';
 
 @Injectable()
-export class Fb2XmlHelperService {
-  public getAuthorName(xml: XMLDocument): AuthorName {
+export class XmlQueryService {
+  public getAuthorName(xml: XMLDocument): Author {
     const authorFirstName =
       xml.documentElement?.querySelector('author first-name')?.innerHTML;
     const authorMiddleName =
@@ -20,7 +15,7 @@ export class Fb2XmlHelperService {
       first: authorFirstName,
       middle: authorMiddleName,
       last: authorLastName,
-    } as AuthorName;
+    } as Author;
   }
 
   public getBookTitle(xml: XMLDocument): string {
