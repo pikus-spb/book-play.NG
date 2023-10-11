@@ -6,9 +6,9 @@ export class FileReaderService {
   private detectEncoding(file: Blob): Observable<string> {
     const result = new Subject<string>();
     const reader = new FileReader();
-    reader.onload = (fileEvent: any) => {
-      const content = fileEvent.target.result;
-      const detectedEncoding = content.match(/encoding="([^"]+)"/)[1];
+    reader.onload = (fileEvent: Event) => {
+      const content = (fileEvent.target as FileReader).result as string;
+      const detectedEncoding = content?.match(/encoding="([^"]+)"/)[1];
       result.next(detectedEncoding);
     };
     reader.readAsBinaryString(file);
