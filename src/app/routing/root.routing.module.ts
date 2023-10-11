@@ -24,6 +24,14 @@ const routes: Route[] = [
           );
         },
       },
+      {
+        path: 'player',
+        loadComponent() {
+          return import('src/pages/player').then(
+            imported => imported.PlayerComponent
+          );
+        },
+      },
       { path: '**', redirectTo: 'home' },
     ],
   },
