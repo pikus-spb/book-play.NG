@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { first, map, Observable, switchMap } from 'rxjs';
+import { first, map, Observable } from 'rxjs';
 
-import { BookData } from './../model/Fb2-book.types';
+import { BookData } from './../model/fb2-book.types';
 import { FileReaderService } from './file-reader.service';
 import { TextParserService } from './text-parser.service';
 
@@ -13,19 +13,11 @@ export class Fb2ReaderService {
   ) {}
 
   public readBook(file: Blob): Observable<BookData> {
-    return this.fileHelper
-      .detectEncoding(file)
-      .pipe(
-        first(),
-        switchMap((encoding: string) => {
-          return this.fileHelper.readFile(file, encoding);
-        })
-      )
-      .pipe(
-        first(),
-        map((text: string) => {
-          return this.fb2Parser.parse(text);
-        })
-      );
+    return this.fileHelper.readFile(file).pipe(
+      first(),
+      map((text: string) => {
+        return this.fb2Parser.parse(text);
+      })
+    );
   }
 }

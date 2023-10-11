@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { first, Observable, Subject, switchMap } from 'rxjs';
 
 @Injectable()
 export class FileReaderService {
-  public detectEncoding(file: Blob): Observable<string> {
+  private detectEncoding(file: Blob): Observable<string> {
     const result = new Subject<string>();
     const reader = new FileReader();
     reader.onload = (fileEvent: any) => {
@@ -16,15 +16,20 @@ export class FileReaderService {
     return result;
   }
 
-  public readFile(file: Blob, encoding: string): Observable<string> {
-    const result = new Subject<string>();
-    const reader = new FileReader();
-    reader.onload = (fileEvent: Event) => {
-      const text = (fileEvent.target as FileReader).result as string;
-      result.next(text);
-    };
-    reader.readAsText(file, encoding);
+  public readFile(file: Blob): Observable<string> {
+    return this.detectEncoding(file).pipe(
+      first(),
+      switchMap((encoding: string) => {
+        const result = new Subject<string>();
+        const reader = new FileReader();
+        reader.onload = (fileEvent: Event) => {
+          const text = (fileEvent.target as FileReader).result as string;
+          result.next(text);
+        };
+        reader.readAsText(file, encoding);
 
-    return result;
+        return result;
+      })
+    );
   }
 }
