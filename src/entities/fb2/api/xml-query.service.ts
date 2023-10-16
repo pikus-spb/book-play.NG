@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Author } from '../model/fb2-book.types';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class XmlQueryService {
   public getAuthorName(xml: XMLDocument): Author {
     const authorFirstName =
@@ -18,7 +20,7 @@ export class XmlQueryService {
     } as Author;
   }
 
-  public getBookTitle(xml: XMLDocument): string {
+  public getBookTitle(xml: XMLDocument): string | undefined {
     return xml.documentElement?.querySelector('book-title')?.innerHTML;
   }
 
