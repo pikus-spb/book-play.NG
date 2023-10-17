@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MaterialModule, UploadFileDirective } from 'src/shared/ui';
+import { FileUploadService } from '../api/file-upload.service';
 
 @Component({
   selector: 'main-menu',
@@ -10,9 +11,9 @@ import { MaterialModule, UploadFileDirective } from 'src/shared/ui';
   imports: [RouterModule, MaterialModule, UploadFileDirective],
 })
 export class MainMenuComponent {
+  constructor(private fileService: FileUploadService) {}
+
   fileUploaded(files?: FileList) {
-    if (files && files.length > 0) {
-      console.log(files[0].name);
-    }
+    this.fileService.parseNewFile(files);
   }
 }

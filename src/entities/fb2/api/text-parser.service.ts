@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BookData } from './../model/fb2-book.types';
+import { BookData } from '../model/fb2-book.types';
 import { XmlQueryService } from './xml-query.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TextParserService {
   constructor(private xmlHelper: XmlQueryService) {}
 
