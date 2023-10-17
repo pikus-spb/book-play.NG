@@ -6,7 +6,7 @@ import { BookData } from 'src/entities/fb2';
 @Injectable({
   providedIn: 'root',
 })
-export class NewBookHandlerService {
+export class NewBookNavigatorService {
   constructor(
     private newBookEvent: NewBookEventService,
     private router: Router
