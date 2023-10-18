@@ -1,2 +1,4 @@
 <h1>Player</h1>
-{{ book$ | async | json }}
+<ng-container *ngIf="book$ | async as book">
+  {{ book.bookTitle }}
+</ng-container>

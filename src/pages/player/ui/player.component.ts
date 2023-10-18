@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { NewBookService } from 'src/features/new-book-upload';
 import { BookData } from 'src/entities/fb2';
 import { MaterialModule } from 'src/shared/ui';
 
@@ -15,9 +15,9 @@ import { MaterialModule } from 'src/shared/ui';
 export class PlayerComponent implements OnInit {
   book$?: Observable<BookData | null>;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(private newBook: NewBookService) {}
 
   ngOnInit() {
-    this.book$ = this.activatedRoute.data.pipe(map(data => data['book']));
+    this.book$ = this.newBook.getNewBookSubscription();
   }
 }
