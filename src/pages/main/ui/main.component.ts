@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   NavigationEnd,
@@ -16,6 +16,7 @@ import { MaterialModule } from 'src/shared/ui';
   selector: 'main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MaterialModule,
     MainHeaderComponent,
