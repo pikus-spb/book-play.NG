@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { BookData } from 'src/entities/fb2';
@@ -8,6 +8,7 @@ import { MaterialModule } from 'src/shared/ui';
   selector: 'player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MaterialModule],
   standalone: true,
 })

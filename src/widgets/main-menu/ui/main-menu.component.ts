@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MaterialModule, UploadFileDirective } from 'src/shared/ui';
 import { FileUploadService } from '../api/file-upload.service';
@@ -7,6 +7,7 @@ import { FileUploadService } from '../api/file-upload.service';
   selector: 'main-menu',
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [RouterModule, MaterialModule, UploadFileDirective],
 })
