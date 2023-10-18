@@ -1,1 +1,2 @@
-export { NewBookEventService } from './api/new-book-event.service';
+export { NewBookService } from './api/new-book.service';
+export { PlayerResolver } from './model/player-resolver.service';
