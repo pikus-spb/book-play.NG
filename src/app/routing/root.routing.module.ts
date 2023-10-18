@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
-import { NewBookPlayerResolver } from 'src/features/new-book-upload';
+import { PlayerResolver } from 'src/features/new-book-upload';
 
 const routes: Route[] = [
   {
@@ -33,7 +33,7 @@ const routes: Route[] = [
           );
         },
         resolve: {
-          book: NewBookPlayerResolver,
+          book: PlayerResolver,
         },
       },
       { path: '**', redirectTo: 'home' },

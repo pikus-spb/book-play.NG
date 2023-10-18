@@ -10,7 +10,7 @@ import { NewBookService } from '../api/new-book.service';
 @Injectable({
   providedIn: 'root',
 })
-export class NewBookPlayerResolver implements Resolve<BookData | null> {
+export class PlayerResolver implements Resolve<BookData | null> {
   constructor(private newBook: NewBookService) {}
 
   resolve(
