@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
+import { PlayerGuardService } from 'src/pages/player';
 
 const routes: Route[] = [
   {
@@ -31,6 +32,7 @@ const routes: Route[] = [
             imported => imported.PlayerComponent
           );
         },
+        canMatch: [PlayerGuardService],
       },
       { path: '**', redirectTo: 'home' },
     ],
