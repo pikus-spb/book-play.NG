@@ -11,7 +11,7 @@ import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
 import { CopyrightComponent } from 'src/entities/copyright';
 import { MaterialModule } from 'src/shared/ui';
-import { LoadingService } from '../api/loading.service';
+import { LoadingService } from 'src/shared/ui';
 
 @Component({
   selector: 'main',
