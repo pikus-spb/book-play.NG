@@ -3,7 +3,9 @@
 </mat-toolbar>
 <mat-progress-bar
   mode="indeterminate"
-  [style.visibility]="loading ? 'visible' : 'hidden'"></mat-progress-bar>
+  [style.visibility]="
+    (loading$ | async) ? 'visible' : 'hidden'
+  "></mat-progress-bar>
 <mat-sidenav-container>
   <mat-sidenav #sidenav opened mode="side">
     <main-menu></main-menu>

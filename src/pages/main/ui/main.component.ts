@@ -6,7 +6,7 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { filter, tap } from 'rxjs';
+import { BehaviorSubject, filter, tap } from 'rxjs';
 import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
 import { CopyrightComponent } from 'src/entities/copyright';
@@ -27,7 +27,7 @@ import { MaterialModule } from 'src/shared/ui';
   standalone: true,
 })
 export class MainComponent {
-  loading = false;
+  loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private router: Router) {
     this._subscribeToRouteChange();
@@ -39,7 +39,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationStart),
         tap(() => {
-          this.loading = true;
+          this.loading$.next(true);
         })
       )
       .subscribe();
@@ -48,7 +48,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationEnd),
         tap(() => {
-          this.loading = false;
+          this.loading$.next(false);
         })
       )
       .subscribe();
