@@ -52,7 +52,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationEnd),
         tap(() => {
-          this.loading = false;
+          this.loadingService.loading = false;
         })
       )
       .subscribe();
