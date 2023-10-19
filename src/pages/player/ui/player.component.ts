@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { InfiniteScrollContainerComponent } from 'src/widgets/infinte-scroll';
 import { NewBookService } from 'src/features/new-book-upload';
 import { BookData } from 'src/entities/fb2';
 import { MaterialModule } from 'src/shared/ui';
@@ -9,7 +10,7 @@ import { MaterialModule } from 'src/shared/ui';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MaterialModule],
+  imports: [MaterialModule, InfiniteScrollContainerComponent],
   standalone: true,
 })
 export class PlayerComponent implements OnInit {
