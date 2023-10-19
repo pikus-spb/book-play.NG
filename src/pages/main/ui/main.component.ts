@@ -11,6 +11,7 @@ import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
 import { CopyrightComponent } from 'src/entities/copyright';
 import { MaterialModule } from 'src/shared/ui';
+import { LoadingService } from 'src/shared/ui';
 
 @Component({
   selector: 'main',
@@ -29,7 +30,10 @@ import { MaterialModule } from 'src/shared/ui';
 export class MainComponent {
   loading = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    public loadingService: LoadingService
+  ) {
     this._subscribeToRouteChange();
   }
 
@@ -39,7 +43,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationStart),
         tap(() => {
-          this.loading = true;
+          this.loadingService.loading = true;
         })
       )
       .subscribe();
@@ -48,7 +52,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationEnd),
         tap(() => {
-          this.loading = false;
+          this.loadingService.loading = false;
         })
       )
       .subscribe();
