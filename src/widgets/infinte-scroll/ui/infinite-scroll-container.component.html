@@ -1,3 +1,6 @@
 <cdk-virtual-scroll-viewport autosize class="infinite-scroll-container">
-  <p *cdkVirtualFor="let item of items" class="scroll-item">{{ item }}</p>
+  <book-paragraph
+    *cdkVirtualFor="let item of items"
+    [text]="item"
+    class="scroll-item"></book-paragraph>
 </cdk-virtual-scroll-viewport>
