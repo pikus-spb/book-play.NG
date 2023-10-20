@@ -10,7 +10,9 @@
           "style": "less",
           "standalone": true,
           "skipTests": true,
-          "skipImport": true
+          "skipImport": true,
+          "path": "./",
+          "flat": true
         },
         "@schematics/angular:pipe": {
           "standalone": true,
