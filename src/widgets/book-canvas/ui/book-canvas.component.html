@@ -1,0 +1,12 @@
+<div class="main-container" cdkVirtualScrollingElement>
+  <h1>{{ author.first }} {{ author.last }} - {{ bookTitle }}</h1>
+  <img *ngIf="bookTitlePicture" [src]="bookTitlePicture" />
+
+  <cdk-virtual-scroll-viewport autosize class="infinite-scroll-container">
+    <book-paragraph
+      *cdkVirtualFor="let text of paragraphs"
+      [text]="text"
+      class="scroll-item">
+    </book-paragraph>
+  </cdk-virtual-scroll-viewport>
+</div>

@@ -3,12 +3,13 @@ import { ScrollingModule as ExperimentalScrollingModule } from '@angular/cdk-exp
 import { Component, Input } from '@angular/core';
 
 import { BookParagraphComponent } from 'src/features/book-paragraph';
+import { Author } from 'src/entities/fb2';
 import { MaterialModule } from 'src/shared/ui';
 
 @Component({
-  selector: 'infinite-scroll-container',
-  templateUrl: './infinite-scroll-container.component.html',
-  styleUrls: ['./infinite-scroll-container.component.less'],
+  selector: 'book-canvas',
+  templateUrl: './book-canvas.component.html',
+  styleUrls: ['./book-canvas.component.less'],
   standalone: true,
   imports: [
     MaterialModule,
@@ -17,6 +18,9 @@ import { MaterialModule } from 'src/shared/ui';
     BookParagraphComponent,
   ],
 })
-export class InfiniteScrollContainerComponent {
-  @Input() items: string[] = [];
+export class BookCanvasComponent {
+  @Input() paragraphs: string[] = [];
+  @Input() author: Author = {} as Author;
+  @Input() bookTitle = '';
+  @Input() bookTitlePicture: string | null = '';
 }

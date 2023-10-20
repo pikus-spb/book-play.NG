@@ -1,11 +1,8 @@
 <ng-container *ngIf="book$ | async as book">
-  <!--
-  <h1>
-    {{ book.author.first }} {{ book.author.last }} -
-    {{ book.bookTitle }}
-  </h1>
-  <img [src]="book.bookTitlePicture" />
--->
-  <infinite-scroll-container [items]="book.paragraphs">
-  </infinite-scroll-container>
+  <book-canvas
+    [author]="book.author"
+    [bookTitle]="book.bookTitle"
+    [bookTitlePicture]="book.bookTitlePicture"
+    [paragraphs]="book.paragraphs">
+  </book-canvas>
 </ng-container>
