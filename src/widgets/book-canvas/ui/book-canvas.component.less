@@ -1,3 +1,25 @@
-.infinite-scroll-container {
+@bookTitleHeight: 1.5rem;
+@bookPictureTitleHeight: 30rem;
+@bookPictureTitleMargin: 2rem;
+
+.main-container {
   height: 100%;
+
+  h1 {
+    margin: 0;
+    padding: 0;
+    height: @bookTitleHeight;
+  }
+
+  img {
+    margin: @bookPictureTitleMargin 0 @bookPictureTitleMargin;
+    height: @bookPictureTitleHeight;
+  }
+
+  .infinite-scroll-container {
+    height: calc(
+      100% - @bookTitleHeight - @bookPictureTitleHeight -
+        calc(2 * @bookPictureTitleMargin) ;
+    );
+  }
 }
