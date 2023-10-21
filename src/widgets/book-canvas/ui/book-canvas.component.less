@@ -1,25 +1,14 @@
-@bookTitleHeight: 1.5rem;
-@bookPictureTitleHeight: 30rem;
-@bookPictureTitleMargin: 2rem;
+@import 'src/app/styles/root';
 
 .main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: @defaultPadding * 2;
+  max-width: 100%;
   height: 100%;
 
-  h1 {
-    margin: 0;
-    padding: 0;
-    height: @bookTitleHeight;
-  }
-
   img {
-    margin: @bookPictureTitleMargin 0 @bookPictureTitleMargin;
-    height: @bookPictureTitleHeight;
-  }
-
-  .infinite-scroll-container {
-    height: calc(
-      100% - @bookTitleHeight - @bookPictureTitleHeight -
-        calc(2 * @bookPictureTitleMargin) ;
-    );
+    max-width: 100%;
   }
 }
