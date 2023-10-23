@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { stripHtml } from 'string-strip-html';
+
 import { Author } from '../model/fb2-book.types';
 
 @Injectable({
@@ -42,9 +44,11 @@ export class XmlQueryService {
     return null;
   }
 
-  public getParagraphs(xml: XMLDocument): string[] {
+  public getParagraphs(xml: XMLDocument, removeTags = false): string[] {
     return Array.from(xml.documentElement?.querySelectorAll('body p')).map(
-      (item: Element) => item.innerHTML
+      (item: Element) => {
+        return removeTags ? stripHtml(item.innerHTML).result : item.innerHTML;
+      }
     );
   }
 }
