@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
 import { Observable } from 'rxjs';
+
 import { PostHelperService } from './post-helper.service';
 
 const AUDIO_API_URL = 'https://tts.voicetech.yandex.net/generate';
