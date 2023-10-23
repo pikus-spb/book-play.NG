@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { BookData } from '../model/fb2-book.types';
 import { XmlQueryService } from './xml-query.service';
 
@@ -15,7 +16,7 @@ export class TextParserService {
     const author = this.xmlHelper.getAuthorName(xml);
     const bookTitle = this.xmlHelper.getBookTitle(xml);
     const bookTitlePicture = this.xmlHelper.getBookTitlePicture(xml);
-    const paragraphs = this.xmlHelper.getParagraphs(xml);
+    const paragraphs = this.xmlHelper.getParagraphs(xml, true);
 
     return {
       author,
