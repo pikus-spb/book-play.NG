@@ -1,1 +1,1 @@
-export { CursorPositionMemoryService } from './api/cursor-position-memory.service';
+export { CursorPositionStoreService } from './api/cursor-position-store.service';
