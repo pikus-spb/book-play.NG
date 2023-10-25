@@ -4,8 +4,8 @@ export class CursorPositionStoreService {
   private storageName = '';
   private position$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  constructor(key = '') {
-    this.setCursorName(key);
+  constructor(cursorName = '') {
+    this.setCursorName(cursorName);
   }
 
   private readPosition() {
