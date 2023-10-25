@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { PostHelperService } from './post-helper.service';
+import { HttpUtilsService } from 'src/shared/lib';
 
 const AUDIO_API_URL = 'https://tts.voicetech.yandex.net/generate';
 const AUDIO_API_DEFAULT_OPTIONS = Object.freeze({
@@ -22,7 +22,7 @@ const AUDIO_HEADERS = new HttpHeaders({
 export class AudioSpeechService {
   constructor(
     private http: HttpClient,
-    private postHelper: PostHelperService
+    private httpUtils: HttpUtilsService
   ) {}
 
   public voice(text: string, speaker: string, speed: string): Observable<Blob> {
@@ -35,8 +35,9 @@ export class AudioSpeechService {
       speed,
     };
 
-    const postParams = this.postHelper.makePostParams(options);
+    const postParams = this.httpUtils.createQueryParameters(options);
 
+    // TODO: add retry here?
     return this.http.post(AUDIO_API_URL, postParams, {
       headers: AUDIO_HEADERS,
       responseType: 'blob',
