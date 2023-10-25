@@ -2,7 +2,9 @@ import { BehaviorSubject, Observable, share } from 'rxjs';
 
 export class CursorPositionStoreService {
   private storageName = '';
-  private position$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private _position$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  public position$: Observable<number> = this.position$.pipe(share());
 
   constructor(cursorName = '') {
     this.setCursorName(cursorName);
@@ -19,14 +21,10 @@ export class CursorPositionStoreService {
 
   set position(n: number) {
     localStorage.setItem(this.storageName, n.toString());
-    this.position$.next(n);
+    this._position$.next(n);
   }
 
   get position(): number {
-    return this.position$.value;
-  }
-
-  getPositionSubscription(): Observable<number> {
-    return this.position$.pipe(share());
+    return this._position$.value;
   }
 }
