@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
 const DEFAULT_RETRY_NUM = 3;
@@ -9,6 +9,7 @@ const DEFAULT_RETRY_DELAY = 500;
   providedIn: 'root',
 })
 export class HttpUtilsService {
+  // TODO: is this useful after all?
   public retry(
     observable$: Observable<any>,
     times: number = DEFAULT_RETRY_NUM,
@@ -17,7 +18,11 @@ export class HttpUtilsService {
     return observable$.pipe(
       retry({
         count: times,
-        delay: delay,
+        delay,
+      }),
+      catchError(error => {
+        console.error(`Http service unavailable: ${error.response}`);
+        return of({ error: error.response });
       })
     );
   }
