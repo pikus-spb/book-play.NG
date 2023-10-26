@@ -11,7 +11,7 @@ export class HttpUtilsService {
   retryUntilSuccess<T>(source$: Observable<T>): Observable<T> {
     return source$.pipe(
       repeat({ delay: DEFAULT_RETRY_DELAY }),
-      filter(res => res.status === 'completed'),
+      filter(res => res.status === 'completed'), // TODO: check if status checking is correct
       take(1)
     );
   }
