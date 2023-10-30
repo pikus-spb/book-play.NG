@@ -15,7 +15,7 @@ import { delay, Subject, takeUntil, tap } from 'rxjs';
 import { BookParagraphComponent } from 'src/features/book-paragraph';
 import { Author } from 'src/entities/fb2';
 import { LoadingService, MaterialModule } from 'src/shared/ui';
-const INDEX = 1000;
+const INDEX = 4000;
 
 @Component({
   selector: 'book-canvas',
@@ -43,7 +43,7 @@ export class BookCanvasComponent implements AfterViewInit {
     public loadingService: LoadingService
   ) {}
 
-  private scrollToLastElement() {
+  private scrollToLastVisibleElement() {
     const paragraph = this.el.nativeElement.querySelector(
       `book-paragraph:last-of-type`
     );
@@ -52,30 +52,29 @@ export class BookCanvasComponent implements AfterViewInit {
     }
   }
 
-  private scrollToElement(query: string, options: any = undefined) {
-    const element = this.el.nativeElement.querySelector(query);
-    if (element) {
-      element.scrollIntoView(options);
+  private scrollToNthVisibleElement(index: number) {
+    const paragraph = this.el.nativeElement.querySelector(
+      `book-paragraph:nth-of-type(${index})`
+    );
+    if (paragraph) {
+      paragraph.scrollIntoView({ block: 'center' });
     }
   }
 
-  private scrollToIndex(index: number) {
+  public scrollToIndex(index: number) {
     const range = this.scrollViewport.getRenderedRange();
-    console.log(range);
+    // console.log(range);
     if (index >= range.start && index <= range.end) {
-      this.scrollToElement(
-        `book-paragraph:nth-of-type(${INDEX - range.start})`,
-        { block: 'center' }
-      );
+      this.scrollToNthVisibleElement(index - range.start);
       this.scrolledToIndex$.next();
       this.loadingService.loading = false;
     } else {
-      this.scrollToElement('book-paragraph:last-of-type');
+      this.scrollToLastVisibleElement();
     }
   }
 
   ngAfterViewInit() {
-    console.log(this.paragraphs[1000]);
+    console.log(this.paragraphs[INDEX]);
 
     this.loadingService.loading = true;
     this.scrollViewport.scrollable
