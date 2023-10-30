@@ -1,11 +1,17 @@
-<div class="main-container" cdkVirtualScrollingElement>
+<div
+  class="main-container"
+  cdkVirtualScrollingElement
+  [style.visibility]="(loadingService.loading$ | async) ? 'hidden' : 'visible'">
   <h1>{{ author.first }} {{ author.last }} - {{ bookTitle }}</h1>
 
   <section class="title-picture-container">
     <img *ngIf="bookTitlePicture" [src]="bookTitlePicture" />
   </section>
 
-  <cdk-virtual-scroll-viewport autosize class="infinite-scroll-container">
+  <cdk-virtual-scroll-viewport
+    #scrollViewport
+    autosize
+    class="infinite-scroll-container">
     <book-paragraph
       *cdkVirtualFor="let text of paragraphs"
       [text]="text"
