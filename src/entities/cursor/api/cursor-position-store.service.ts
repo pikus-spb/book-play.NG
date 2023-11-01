@@ -1,10 +1,10 @@
-import { BehaviorSubject, Observable, share } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
 export class CursorPositionStoreService {
   private storageName = '';
   private _position$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  public position$: Observable<number> = this.position$.pipe(share());
+  public position$: Observable<number> = this.position$.pipe(shareReplay(1));
 
   constructor(cursorName = '') {
     this.setCursorName(cursorName);

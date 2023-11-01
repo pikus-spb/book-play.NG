@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, fromEvent, Observable, share, tap } from 'rxjs';
+import { BehaviorSubject, fromEvent, Observable, shareReplay, tap } from 'rxjs';
 
 @Directive({
   selector: '[audioPlayer]',
@@ -18,7 +18,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
   private audio: HTMLAudioElement | null = null;
   private pause$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
-  public paused$: Observable<boolean> = this.pause$.pipe(share());
+  public paused$: Observable<boolean> = this.pause$.pipe(shareReplay(1));
 
   @Output() playFinished: EventEmitter<void> = new EventEmitter<void>();
 
