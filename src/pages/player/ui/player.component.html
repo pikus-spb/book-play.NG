@@ -1,8 +1,3 @@
-<ng-container *ngIf="book$ | async as book">
-  <book-canvas
-    [author]="book.author"
-    [bookTitle]="book.bookTitle"
-    [bookTitlePicture]="book.bookTitlePicture"
-    [paragraphs]="book.paragraphs">
-  </book-canvas>
+<ng-container *ngIf="book$ | async">
+  <book-canvas [book$]="book$"></book-canvas>
 </ng-container>

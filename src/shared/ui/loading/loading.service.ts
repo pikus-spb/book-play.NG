@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, share, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +9,7 @@ export class LoadingService {
     false
   );
 
-  public loading$: Observable<boolean> = this._loading$.pipe(share());
+  public loading$: Observable<boolean> = this._loading$.pipe(shareReplay(1));
 
   set loading(loading: boolean) {
     this._loading$.next(loading);

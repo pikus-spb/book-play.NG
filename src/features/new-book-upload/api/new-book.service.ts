@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, share } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { BookData } from 'src/entities/fb2';
 
 @Injectable({
@@ -18,6 +18,6 @@ export class NewBookService {
   }
 
   getNewBookSubscription(): Observable<BookData | null> {
-    return this.bookData$.pipe(share());
+    return this.bookData$.pipe(shareReplay(1));
   }
 }
