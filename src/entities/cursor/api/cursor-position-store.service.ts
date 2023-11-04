@@ -1,17 +1,17 @@
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
+@Injectable({
+  providedIn: 'root',
+})
 export class CursorPositionStoreService {
   private storageName = '';
   private _position$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  public position$: Observable<number> = this.position$.pipe(shareReplay(1));
-
-  constructor(cursorName = '') {
-    this.setCursorName(cursorName);
-  }
+  public position$: Observable<number> = this._position$.pipe(shareReplay(1));
 
   private readPosition() {
-    this.position = parseInt(localStorage.getItem(this.storageName)) || 0;
+    this.position = parseInt(localStorage.getItem(this.storageName) ?? '0');
   }
 
   setCursorName(name: string): void {

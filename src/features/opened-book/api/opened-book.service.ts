@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
-import { BookData } from 'src/entities/fb2';
+import { CursorPositionStoreService } from 'src/entities/cursor';
+import { BookData, BookHelperService } from 'src/entities/fb2';
 
 @Injectable({
   providedIn: 'root',
 })
-export class NewBookService {
+export class OpenedBookService {
   private bookData$: BehaviorSubject<BookData | null> =
     new BehaviorSubject<BookData | null>(null);
 
+  constructor(
+    private cursorService: CursorPositionStoreService,
+    private bookHelper: BookHelperService
+  ) {}
+
   update(value: BookData | null): void {
+    if (value !== null) {
+      this.cursorService.setCursorName(this.bookHelper.getBookHashKey(value));
+    }
     this.bookData$.next(value);
   }
 
-  getCurrentValue(): BookData | null {
+  getBook(): BookData | null {
     return this.bookData$.value;
   }
 

@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
-import { NewBookService } from 'src/features/new-book-upload';
+import { OpenedBookService } from 'src/features/opened-book';
 import { BookData } from 'src/entities/fb2';
 import { MaterialModule } from 'src/shared/ui';
+import { AutoPlayService } from '../api/auto-play.service';
 
 @Component({
   selector: 'player',
@@ -16,9 +17,16 @@ import { MaterialModule } from 'src/shared/ui';
 export class PlayerComponent implements OnInit {
   book$?: Observable<BookData | null>;
 
-  constructor(private newBook: NewBookService) {}
+  constructor(
+    private book: OpenedBookService,
+    private autoPlay: AutoPlayService
+  ) {}
+
+  public playParagraph(index: number): void {
+    this.autoPlay.play(index);
+  }
 
   ngOnInit() {
-    this.book$ = this.newBook.getNewBookSubscription();
+    this.book$ = this.book.getNewBookSubscription();
   }
 }

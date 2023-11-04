@@ -6,8 +6,15 @@ import {
   OnDestroy,
   Output,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, fromEvent, Observable, shareReplay, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  fromEvent,
+  Observable,
+  shareReplay,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 @Directive({
   selector: '[audioPlayer]',
@@ -17,6 +24,7 @@ import { BehaviorSubject, fromEvent, Observable, shareReplay, tap } from 'rxjs';
 export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
   private audio: HTMLAudioElement | null = null;
   private pause$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private destroyed$: Subject<void> = new Subject<void>();
 
   public paused$: Observable<boolean> = this.pause$.pipe(shareReplay(1));
 
@@ -30,7 +38,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
         tap(() => {
           this.pause$.next(false);
         }),
-        takeUntilDestroyed()
+        takeUntil(this.destroyed$)
       )
       .subscribe();
     fromEvent(audio, 'pause')
@@ -38,7 +46,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
         tap(() => {
           this.pause$.next(true);
         }),
-        takeUntilDestroyed()
+        takeUntil(this.destroyed$)
       )
       .subscribe();
     fromEvent(audio, 'ended')
@@ -47,7 +55,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
           this.pause$.next(true);
           this.playFinished.emit();
         }),
-        takeUntilDestroyed()
+        takeUntil(this.destroyed$)
       )
       .subscribe();
   }
@@ -86,5 +94,6 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
       this.audio.remove();
       this.audio = null;
     }
+    this.destroyed$.next();
   }
 }
