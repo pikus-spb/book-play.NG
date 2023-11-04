@@ -9,4 +9,14 @@
   </button>
   <img src="/shared/assets/images/favicon.ico" alt="Book-play.ru логитип" />
   <h1>Book-play.ru</h1>
+  <button
+    mat-icon-button
+    matTooltip="Играть/Пауза"
+    matTooltipPosition="below"
+    matTooltipShowDelay="1500"
+    audioPlayer
+    #player="audioPlayerContext">
+    <!--(click)="menuClick.emit()">-->
+    <mat-icon>play_arrow</mat-icon>
+  </button>
 </ng-container>

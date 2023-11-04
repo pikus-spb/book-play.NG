@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { NewBookService } from 'src/features/new-book-upload';
+import { OpenedBookService } from 'src/features/opened-book';
 import { BookData } from 'src/entities/fb2';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { BookData } from 'src/entities/fb2';
 })
 export class NewBookNavigatorService {
   constructor(
-    private newBookEvent: NewBookService,
+    private newBookEvent: OpenedBookService,
     private router: Router
   ) {}
 

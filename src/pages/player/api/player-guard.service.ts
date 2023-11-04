@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { CanMatch, Route, UrlSegment } from '@angular/router';
-import { NewBookService } from 'src/features/new-book-upload';
+import { OpenedBookService } from 'src/features/opened-book';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerGuardService implements CanMatch {
-  constructor(private newBook: NewBookService) {}
+  constructor(private newBook: OpenedBookService) {}
 
-  canMatch(route: Route, segments: UrlSegment[]): boolean {
-    return this.newBook.getCurrentValue() !== null;
+  canMatch(): boolean {
+    return this.newBook.getBook() !== null;
   }
 }
