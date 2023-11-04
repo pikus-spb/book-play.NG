@@ -1,5 +1,3 @@
 <ng-container *ngIf="book$ | async">
-  <book-canvas
-    [book$]="book$"
-    (paragraphClick)="playParagraph($event)"></book-canvas>
+  <book-canvas [book$]="book$"></book-canvas>
 </ng-container>

@@ -18,20 +18,14 @@ const AUDIO_HEADERS = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded',
 });
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AudioSpeechService {
   constructor(
     private http: HttpClient,
     private httpUtils: HttpUtilsService
   ) {}
 
-  public getVoice(
-    text: string,
-    speaker = 'ermil',
-    speed = '0.9'
-  ): Observable<Blob> {
+  public voice(text: string, speaker: string, speed: string): Observable<Blob> {
     text = encodeURIComponent(text);
 
     const options = {
