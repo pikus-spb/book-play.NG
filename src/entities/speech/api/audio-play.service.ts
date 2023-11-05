@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { first, tap } from 'rxjs';
 import { AudioPlayerDirective } from 'src/shared/ui';
 
 @Injectable({
@@ -9,6 +10,14 @@ export class AudioPlayService {
 
   public registerPlayer(player: AudioPlayerDirective): void {
     this.player = player;
+    this.player.onDestroy$
+      .pipe(
+        first(),
+        tap(() => {
+          this.player = undefined;
+        })
+      )
+      .subscribe();
   }
 
   public setAudio(base64Data: string): void {

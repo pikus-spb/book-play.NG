@@ -10,6 +10,7 @@ import {
   BehaviorSubject,
   fromEvent,
   Observable,
+  share,
   shareReplay,
   Subject,
   takeUntil,
@@ -26,6 +27,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
   private pause$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   private destroyed$: Subject<void> = new Subject<void>();
 
+  public onDestroy$: Observable<void> = this.destroyed$.pipe(share());
   public paused$: Observable<boolean> = this.pause$.pipe(shareReplay(1));
 
   @Output() playFinished: EventEmitter<void> = new EventEmitter<void>();
