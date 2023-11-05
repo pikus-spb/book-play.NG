@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AudioPlayerDirective } from '../../../shared/ui';
+import { AudioPlayerDirective } from 'src/shared/ui';
 
 @Injectable({
   providedIn: 'root',
