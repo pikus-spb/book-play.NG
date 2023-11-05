@@ -18,7 +18,7 @@ export class PlayerComponent implements OnInit {
   book$?: Observable<BookData | null>;
 
   constructor(
-    private book: OpenedBookService,
+    private openedBookService: OpenedBookService,
     private autoPlay: AutoPlayService
   ) {}
 
@@ -27,6 +27,6 @@ export class PlayerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.book$ = this.book.getNewBookSubscription();
+    this.book$ = this.openedBookService.book$;
   }
 }

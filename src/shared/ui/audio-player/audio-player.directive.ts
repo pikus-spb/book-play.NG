@@ -23,14 +23,17 @@ import {
   exportAs: 'audioPlayerContext',
 })
 export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
+  @Output() playFinished: EventEmitter<void> = new EventEmitter<void>();
+
   private audio: HTMLAudioElement | null = null;
   private pause$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   private destroyed$: Subject<void> = new Subject<void>();
 
-  public onDestroy$: Observable<void> = this.destroyed$.pipe(share());
   public paused$: Observable<boolean> = this.pause$.pipe(shareReplay(1));
-
-  @Output() playFinished: EventEmitter<void> = new EventEmitter<void>();
+  public canPlay$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  public onDestroy$: Observable<void> = this.destroyed$.pipe(share());
 
   constructor(private el: ElementRef) {}
 
@@ -60,6 +63,22 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
         takeUntil(this.destroyed$)
       )
       .subscribe();
+    fromEvent(audio, 'canplaythrough')
+      .pipe(
+        tap(() => {
+          this.canPlay$.next(true);
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe();
+    fromEvent(audio, 'emptied')
+      .pipe(
+        tap(() => {
+          this.canPlay$.next(false);
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe();
   }
 
   public setAudio(base64Data: string): void {
@@ -80,6 +99,14 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
     } else {
       this.pause();
     }
+  }
+
+  public get paused(): boolean {
+    return this.pause$.value;
+  }
+
+  public get canPlay(): boolean {
+    return this.canPlay$.value;
   }
 
   ngAfterViewInit() {

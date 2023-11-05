@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { switchMap, tap } from 'rxjs';
+import { AudioPlayService } from 'src/widgets/audio-player';
 import { OpenedBookService } from 'src/features/opened-book';
 import { Base64HelperService } from 'src/entities/base64';
-import { AudioPlayService, AudioSpeechService } from 'src/entities/speech';
+import { AudioSpeechService } from 'src/entities/speech';
 
 @Injectable({
   providedIn: 'root',

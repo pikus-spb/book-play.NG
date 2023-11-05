@@ -8,17 +8,15 @@ import { BookData } from 'src/entities/fb2';
 })
 export class NewBookNavigatorService {
   constructor(
-    private newBookEvent: OpenedBookService,
+    private openedBookService: OpenedBookService,
     private router: Router
   ) {}
 
   public handle(): void {
-    this.newBookEvent
-      .getNewBookSubscription()
-      .subscribe((bookData: BookData | null) => {
-        if (bookData !== null) {
-          this.router.navigateByUrl('/player');
-        }
-      });
+    this.openedBookService.book$.subscribe((bookData: BookData | null) => {
+      if (bookData !== null) {
+        this.router.navigateByUrl('/player');
+      }
+    });
   }
 }

@@ -6,7 +6,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { AudioPlayService } from 'src/entities/speech';
+import { AudioPlayService } from 'src/widgets/audio-player';
 import { AudioPlayerDirective, MaterialModule } from 'src/shared/ui';
 
 @Component({
@@ -21,7 +21,7 @@ export class MainHeaderComponent implements AfterViewInit {
   @Output() menuClick = new EventEmitter<void>();
   @ViewChild('player') player?: AudioPlayerDirective;
 
-  constructor(private playerService: AudioPlayService) {}
+  constructor(public playerService: AudioPlayService) {}
 
   ngAfterViewInit() {
     if (this.player) {

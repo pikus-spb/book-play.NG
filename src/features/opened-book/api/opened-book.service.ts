@@ -10,6 +10,10 @@ export class OpenedBookService {
   private bookData$: BehaviorSubject<BookData | null> =
     new BehaviorSubject<BookData | null>(null);
 
+  public readonly book$: Observable<BookData | null> = this.bookData$.pipe(
+    shareReplay(1)
+  );
+
   constructor(
     private cursorService: CursorPositionStoreService,
     private bookHelper: BookHelperService
@@ -24,9 +28,5 @@ export class OpenedBookService {
 
   getBook(): BookData | null {
     return this.bookData$.value;
-  }
-
-  getNewBookSubscription(): Observable<BookData | null> {
-    return this.bookData$.pipe(shareReplay(1));
   }
 }
