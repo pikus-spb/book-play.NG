@@ -14,7 +14,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { first, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { first, Observable, share, Subject, takeUntil, tap } from 'rxjs';
 import { BookParagraphComponent } from 'src/features/book-paragraph';
 import { ViewportScrollerService } from 'src/features/viewport-scroller';
 import { CursorPositionStoreService } from 'src/entities/cursor';
@@ -44,6 +44,8 @@ export class BookCanvasComponent implements AfterViewInit, OnDestroy {
   private viewportScroller?: ViewportScrollerService;
   private destroyed$: Subject<void> = new Subject<void>();
 
+  private onDestroy$: Observable<void> = this.destroyed$.pipe(share());
+
   constructor(
     private el: ElementRef,
     private bookHelper: BookHelperService,
@@ -72,7 +74,8 @@ export class BookCanvasComponent implements AfterViewInit, OnDestroy {
     this.viewportScroller = new ViewportScrollerService(
       this.el,
       this.viewport,
-      PARAGRAPH_TAG
+      PARAGRAPH_TAG,
+      this.onDestroy$
     );
     this.book$
       ?.pipe(
