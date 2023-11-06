@@ -16,6 +16,7 @@ export class AutoPlayService {
     private audioPlayService: AudioPlayService
   ) {}
 
+  // TODO: this is POC
   public playParagraph(index: number) {
     const data = this.openedBook.getBook()?.paragraphs;
     if (data && data.length > 0) {
