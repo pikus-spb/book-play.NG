@@ -16,7 +16,7 @@ export class AutoPlayService {
     private audioPlayService: AudioPlayService
   ) {}
 
-  public play(index: number) {
+  public playParagraph(index: number) {
     const data = this.openedBook.getBook()?.paragraphs;
     if (data && data.length > 0) {
       this.audioSpeechService

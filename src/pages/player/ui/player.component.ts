@@ -23,7 +23,7 @@ export class PlayerComponent implements OnInit {
   ) {}
 
   public playParagraph(index: number): void {
-    this.autoPlay.play(index);
+    this.autoPlay.playParagraph(index);
   }
 
   ngOnInit() {
