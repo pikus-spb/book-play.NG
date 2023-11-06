@@ -14,8 +14,9 @@
     autosize
     class="infinite-scroll-container">
     <book-paragraph
-      *cdkVirtualFor="let text of book.paragraphs"
+      *cdkVirtualFor="let text of book.paragraphs; index as index"
       [text]="text"
+      (click)="onParagraphClick(index)"
       class="scroll-item">
     </book-paragraph>
   </cdk-virtual-scroll-viewport>

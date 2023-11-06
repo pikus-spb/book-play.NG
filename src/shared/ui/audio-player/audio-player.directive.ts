@@ -6,8 +6,16 @@ import {
   OnDestroy,
   Output,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, fromEvent, Observable, shareReplay, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  fromEvent,
+  Observable,
+  share,
+  shareReplay,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 @Directive({
   selector: '[audioPlayer]',
@@ -15,12 +23,17 @@ import { BehaviorSubject, fromEvent, Observable, shareReplay, tap } from 'rxjs';
   exportAs: 'audioPlayerContext',
 })
 export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
+  @Output() playFinished: EventEmitter<void> = new EventEmitter<void>();
+
   private audio: HTMLAudioElement | null = null;
   private pause$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private destroyed$: Subject<void> = new Subject<void>();
 
   public paused$: Observable<boolean> = this.pause$.pipe(shareReplay(1));
-
-  @Output() playFinished: EventEmitter<void> = new EventEmitter<void>();
+  public canPlay$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  public onDestroy$: Observable<void> = this.destroyed$.pipe(share());
 
   constructor(private el: ElementRef) {}
 
@@ -30,7 +43,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
         tap(() => {
           this.pause$.next(false);
         }),
-        takeUntilDestroyed()
+        takeUntil(this.destroyed$)
       )
       .subscribe();
     fromEvent(audio, 'pause')
@@ -38,7 +51,7 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
         tap(() => {
           this.pause$.next(true);
         }),
-        takeUntilDestroyed()
+        takeUntil(this.destroyed$)
       )
       .subscribe();
     fromEvent(audio, 'ended')
@@ -47,7 +60,23 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
           this.pause$.next(true);
           this.playFinished.emit();
         }),
-        takeUntilDestroyed()
+        takeUntil(this.destroyed$)
+      )
+      .subscribe();
+    fromEvent(audio, 'canplaythrough')
+      .pipe(
+        tap(() => {
+          this.canPlay$.next(true);
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe();
+    fromEvent(audio, 'emptied')
+      .pipe(
+        tap(() => {
+          this.canPlay$.next(false);
+        }),
+        takeUntil(this.destroyed$)
       )
       .subscribe();
   }
@@ -72,6 +101,14 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
     }
   }
 
+  public get paused(): boolean {
+    return this.pause$.value;
+  }
+
+  public get canPlay(): boolean {
+    return this.canPlay$.value;
+  }
+
   ngAfterViewInit() {
     this.audio = document.createElement('audio');
     this.audio.setAttribute('hidden', 'true');
@@ -86,5 +123,6 @@ export class AudioPlayerDirective implements AfterViewInit, OnDestroy {
       this.audio.remove();
       this.audio = null;
     }
+    this.destroyed$.next();
   }
 }
