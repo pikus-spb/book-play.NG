@@ -3,8 +3,15 @@
     <mat-icon>home</mat-icon>Главная
   </a>
   <a mat-list-item (uploadFile)="fileUploaded($event)" [accept]="'.fb2'"
-    ><mat-icon>upload</mat-icon>Загрузить</a
-  >
+    ><mat-icon>upload</mat-icon>Загрузить
+  </a>
+  <a
+    *ngIf="openedBookService.book$ | async"
+    mat-list-item
+    routerLink="/player"
+    routerLinkActive="active">
+    <mat-icon>play_arrow</mat-icon>Плеер
+  </a>
   <a mat-list-item routerLink="/settings" routerLinkActive="active">
     <mat-icon>settings</mat-icon>Настройки
   </a>
