@@ -7,7 +7,12 @@
     (loadingService.loading$ | async) ? 'visible' : 'hidden'
   "></mat-progress-bar>
 <mat-sidenav-container>
-  <mat-sidenav #sidenav opened mode="side">
+  <mat-sidenav
+    #sidenav
+    opened
+    mode="over"
+    autoFocus="false"
+    (click)="sidenav.close()">
     <main-menu></main-menu>
     <copyright></copyright>
   </mat-sidenav>
