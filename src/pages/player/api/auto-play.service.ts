@@ -3,8 +3,8 @@ import { mergeMap, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AudioService } from 'src/features/audio-player';
 import { OpenedBookService } from 'src/features/opened-book';
 import { Base64HelperService } from 'src/entities/base64';
+import { CursorPositionStoreService } from 'src/entities/cursor';
 import { AudioSpeechService } from 'src/entities/speech';
-import { CursorPositionStoreService } from '../../../entities/cursor';
 
 @Injectable({
   providedIn: 'root',
