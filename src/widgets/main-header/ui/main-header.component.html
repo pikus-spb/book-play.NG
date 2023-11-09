@@ -9,16 +9,5 @@
   </button>
   <img src="/shared/assets/images/favicon.ico" alt="Book-play.ru логитип" />
   <h1>Book-play.ru</h1>
-  <!-- TODO: create separate feature button in audio-player and use here -->
-  <button
-    mat-icon-button
-    matTooltip="Играть/Пауза"
-    matTooltipPosition="below"
-    matTooltipShowDelay="1500"
-    audioPlayer
-    [hidden]="(playerService.canPlay$ | async) === false"
-    #player="audioPlayerContext"
-    (click)="playerService.toggle()">
-    <mat-icon>{{ (player.paused$ | async) ? 'play_arrow' : 'pause' }}</mat-icon>
-  </button>
+  <player-button></player-button>
 </ng-container>

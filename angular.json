@@ -11,7 +11,6 @@
           "standalone": true,
           "skipTests": true,
           "skipImport": true,
-          "path": "./",
           "flat": true
         },
         "@schematics/angular:pipe": {
