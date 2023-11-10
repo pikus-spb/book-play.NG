@@ -26,7 +26,7 @@ export class OpenedBookService {
     this.bookData$.next(value);
   }
 
-  getBook(): BookData | null {
+  get book(): BookData | null {
     return this.bookData$.value;
   }
 }
