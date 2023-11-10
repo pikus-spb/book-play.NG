@@ -1,4 +1,9 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+} from '@angular/core';
 
 import { AudioPlayerDirective, MaterialModule } from 'src/shared/ui';
 import { AudioService } from '../api/audio.service';
@@ -7,6 +12,7 @@ import { AudioService } from '../api/audio.service';
   selector: 'player-button',
   templateUrl: './player-button.component.html',
   styleUrls: ['./player-button.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MaterialModule, AudioPlayerDirective],
 })

@@ -5,6 +5,7 @@ import {
 import { ScrollingModule as ExperimentalScrollingModule } from '@angular/cdk-experimental/scrolling';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -28,6 +29,7 @@ const PARAGRAPH_TAG = 'book-paragraph';
   selector: 'book-canvas',
   templateUrl: './book-canvas.component.html',
   styleUrls: ['./book-canvas.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     MaterialModule,
