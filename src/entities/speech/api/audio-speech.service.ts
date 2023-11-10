@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, retry } from 'rxjs';
 
 import { HttpUtilsService } from 'src/shared/lib';
 
@@ -17,6 +17,7 @@ const AUDIO_API_DEFAULT_OPTIONS = Object.freeze({
 const AUDIO_HEADERS = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded',
 });
+const RETRY_NUMBER = 3;
 
 @Injectable({
   providedIn: 'root',
@@ -43,10 +44,18 @@ export class AudioSpeechService {
 
     const postParams = this.httpUtils.createQueryParameters(options);
 
-    // TODO: add retry here?
-    return this.http.post(AUDIO_API_URL, postParams, {
-      headers: AUDIO_HEADERS,
-      responseType: 'blob',
-    });
+    return this.http
+      .post(AUDIO_API_URL, postParams, {
+        headers: AUDIO_HEADERS,
+        responseType: 'blob',
+      })
+      .pipe(
+        retry(RETRY_NUMBER),
+        catchError((err: any, caught: Observable<Blob>) => {
+          console.error(err);
+          console.error('Audio API did not respond 3 times');
+          return caught;
+        })
+      );
   }
 }

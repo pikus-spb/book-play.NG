@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
@@ -14,7 +19,7 @@ import { AutoPlayService } from '../api/auto-play.service';
   imports: [MaterialModule, BookCanvasComponent],
   standalone: true,
 })
-export class PlayerComponent implements OnInit {
+export class PlayerComponent implements OnInit, OnDestroy {
   book$?: Observable<BookData | null>;
 
   constructor(
@@ -23,10 +28,14 @@ export class PlayerComponent implements OnInit {
   ) {}
 
   public playParagraph(index: number): void {
-    this.autoPlay.playParagraph(index);
+    this.autoPlay.autoPlay(index);
   }
 
   ngOnInit() {
     this.book$ = this.openedBookService.book$;
+  }
+
+  ngOnDestroy() {
+    this.autoPlay.ngOnDestroy();
   }
 }
