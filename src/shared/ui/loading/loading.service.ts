@@ -1,5 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { filter, Observable, Subject, takeUntil, tap } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  Observable,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +45,7 @@ export class LoadingService implements OnDestroy {
         takeUntil(this._destroyed$)
       )
       .subscribe();
-  });
+  }).pipe(distinctUntilChanged());
 
   ngOnDestroy() {
     this._destroyed$.next();
