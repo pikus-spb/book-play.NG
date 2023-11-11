@@ -20,13 +20,14 @@ export class OpenedBookService {
   ) {}
 
   update(value: BookData | null): void {
+    this.bookData$.next(value);
+
     if (value !== null) {
       this.cursorService.setCursorName(this.bookHelper.getBookHashKey(value));
     }
-    this.bookData$.next(value);
   }
 
-  getBook(): BookData | null {
+  get book(): BookData | null {
     return this.bookData$.value;
   }
 }
