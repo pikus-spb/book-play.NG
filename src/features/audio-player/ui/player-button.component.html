@@ -2,10 +2,9 @@
   mat-icon-button
   matTooltip="Играть/Пауза"
   matTooltipPosition="below"
-  matTooltipShowDelay="1500"
-  audioPlayer
-  [hidden]="(player.canPlay$ | async) !== true"
-  #player="audioPlayerContext"
-  (click)="player.toggle()">
-  <mat-icon>{{ (player.paused$ | async) ? 'play_arrow' : 'pause' }}</mat-icon>
+  matTooltipShowDelay="1500">
+  <!-- TODO: auto play call  (click)="audioPlayer.toggle()">-->
+  <mat-icon>{{
+    (audioPlayer.paused$ | async) ? 'play_arrow' : 'pause'
+  }}</mat-icon>
 </button>
