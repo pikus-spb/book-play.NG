@@ -3,7 +3,7 @@ import { first, firstValueFrom, Observable, switchMap, tap } from 'rxjs';
 
 import { OpenedBookService } from 'src/features/opened-book';
 import { Base64HelperService } from 'src/entities/base64';
-import { AudioSpeechService } from 'src/entities/speech';
+import { SpeechService } from 'src/entities/speech';
 
 import { AudioStorageService } from '../model/audio-storage.service';
 
@@ -14,12 +14,12 @@ export class AudioPreloadingService {
   constructor(
     private openedBook: OpenedBookService,
     private audioStorage: AudioStorageService,
-    private audioSpeechService: AudioSpeechService,
+    private speechService: SpeechService,
     private base65Helper: Base64HelperService
   ) {}
 
   private fetchAudio(index: number): Observable<string> {
-    return this.audioSpeechService
+    return this.speechService
       .getVoice(this.openedBook.book?.paragraphs[index] ?? '')
       .pipe(
         switchMap((blob: Blob) => {
@@ -32,16 +32,19 @@ export class AudioPreloadingService {
       );
   }
 
-  public async preloadParagraph(index: number, extra = 0): Promise<void> {
+  public preloadParagraph(index: number, extra = 0): Promise<any> {
     const data = this.openedBook.book?.paragraphs;
+    const promises: Promise<any>[] = [Promise.resolve()];
 
-    if (index >= 0 && data && data.length > 0) {
+    if (data && data.length > 0 && index >= 0 && index < data.length) {
       for (let i = index; i <= index + extra; i++) {
         const savedAudio = this.audioStorage.get(i);
         if (!savedAudio) {
-          await firstValueFrom(this.fetchAudio(i));
+          promises.push(firstValueFrom(this.fetchAudio(i)));
         }
       }
     }
+
+    return Promise.all(promises);
   }
 }

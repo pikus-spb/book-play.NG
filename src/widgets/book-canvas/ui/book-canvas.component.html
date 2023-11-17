@@ -1,8 +1,7 @@
 <div
   class="main-container"
   *ngIf="book$ | async as book"
-  cdkVirtualScrollingElement
-  [style.visibility]="(loadingService.loading$ | async) ? 'hidden' : 'visible'">
+  cdkVirtualScrollingElement>
   <h1>{{ book.author.first }} {{ book.author.last }} - {{ book.bookTitle }}</h1>
 
   <section class="title-picture-container">

@@ -24,11 +24,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   constructor(
     private openedBookService: OpenedBookService,
-    private autoPlay: AutoPlayService
+    private autoPlayService: AutoPlayService
   ) {}
 
   public playParagraph(index: number): void {
-    this.autoPlay.autoPlay(index);
+    this.autoPlayService.autoPlay(index);
   }
 
   ngOnInit() {
@@ -36,6 +36,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.autoPlay.ngOnDestroy();
+    this.autoPlayService.ngOnDestroy();
   }
 }
