@@ -1,1 +1,1 @@
-export { AudioSpeechService } from './api/audio-speech.service';
+export { SpeechService } from './api/speech.service';

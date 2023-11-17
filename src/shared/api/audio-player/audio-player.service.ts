@@ -29,7 +29,7 @@ export class AudioPlayerService implements OnDestroy {
   private createAudioElement(): void {
     this.audio = document.createElement('audio');
     this.audio.setAttribute('hidden', 'true');
-    document.appendChild(this.audio);
+    document.body.appendChild(this.audio);
 
     this.attachAudioEvents();
   }
