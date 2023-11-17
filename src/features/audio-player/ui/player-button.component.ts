@@ -1,12 +1,7 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { AudioPlayerDirective, MaterialModule } from 'src/shared/ui';
-import { AudioService } from '../api/audio.service';
+import { AudioPlayerService } from 'src/shared/api';
+import { MaterialModule } from 'src/shared/ui';
 
 @Component({
   selector: 'player-button',
@@ -14,16 +9,8 @@ import { AudioService } from '../api/audio.service';
   styleUrls: ['./player-button.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MaterialModule, AudioPlayerDirective],
+  imports: [MaterialModule],
 })
-export class PlayerButtonComponent implements AfterViewInit {
-  @ViewChild('player') player?: AudioPlayerDirective;
-
-  constructor(public audioService: AudioService) {}
-
-  ngAfterViewInit() {
-    if (this.player) {
-      this.audioService.registerPlayer(this.player);
-    }
-  }
+export class PlayerButtonComponent {
+  constructor(public audioPlayer: AudioPlayerService) {}
 }

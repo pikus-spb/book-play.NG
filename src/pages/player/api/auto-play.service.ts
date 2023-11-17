@@ -2,9 +2,9 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, tap } from 'rxjs';
 
-import { AudioService } from 'src/features/audio-player';
 import { OpenedBookService } from 'src/features/opened-book';
 import { CursorPositionStoreService } from 'src/entities/cursor';
+import { AudioPlayerService } from 'src/shared/api';
 import { LoadingService } from 'src/shared/ui';
 
 import { AudioStorageService } from '../model/audio-storage.service';
@@ -20,7 +20,7 @@ export class AutoPlayService implements OnDestroy {
 
   constructor(
     private openedBook: OpenedBookService,
-    private audioService: AudioService,
+    private audioPlayer: AudioPlayerService,
     private cursorService: CursorPositionStoreService,
     private audioStorage: AudioStorageService,
     private preloadHelper: AudioPreloadingService,
@@ -45,7 +45,7 @@ export class AutoPlayService implements OnDestroy {
     await this.preloadHelper.preloadParagraph(index, DEFAULT_PRELOAD_EXTRA);
     this.loadingService.loading = false;
 
-    this.audioService.setAudio(this.audioStorage.get(index));
+    this.audioPlayer.setAudio(this.audioStorage.get(index));
   }
 
   ngOnDestroy() {
