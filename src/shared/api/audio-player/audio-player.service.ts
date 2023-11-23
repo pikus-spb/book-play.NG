@@ -21,6 +21,9 @@ export class AudioPlayerService implements OnDestroy {
   );
 
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
+  public get paused(): boolean {
+    return this.audio.paused;
+  }
 
   constructor() {
     this.createAudioElement();
