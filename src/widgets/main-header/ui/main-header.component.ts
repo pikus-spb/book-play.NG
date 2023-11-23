@@ -4,7 +4,7 @@ import {
   EventEmitter,
   Output,
 } from '@angular/core';
-// import { PlayerButtonComponent } from 'src/shared/audio-player';
+import { PlayerButtonComponent } from 'src/features/audio-player';
 import { MaterialModule } from 'src/shared/ui';
 
 @Component({
@@ -13,7 +13,7 @@ import { MaterialModule } from 'src/shared/ui';
   styleUrls: ['./main-header.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MaterialModule /*, PlayerButtonComponent*/],
+  imports: [MaterialModule, PlayerButtonComponent],
 })
 export class MainHeaderComponent {
   @Output() menuClick = new EventEmitter<void>();

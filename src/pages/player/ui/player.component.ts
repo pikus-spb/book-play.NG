@@ -28,7 +28,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   ) {}
 
   public playParagraph(index: number): void {
-    this.autoPlayService.autoPlay(index);
+    this.autoPlayService.play(index);
   }
 
   ngOnInit() {

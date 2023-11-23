@@ -7,6 +7,11 @@ import { SpeechService } from 'src/entities/speech';
 
 import { AudioStorageService } from '../model/audio-storage.service';
 
+export const PRELOAD_EXTRA = {
+  min: 0,
+  default: 2,
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -32,19 +37,19 @@ export class AudioPreloadingService {
       );
   }
 
-  public preloadParagraph(index: number, extra = 0): Promise<any> {
+  public async preloadParagraph(
+    index: number,
+    extra = PRELOAD_EXTRA.default
+  ): Promise<any> {
     const data = this.openedBook.book?.paragraphs;
-    const promises: Promise<any>[] = [Promise.resolve()];
 
-    if (data && data.length > 0 && index >= 0 && index < data.length) {
-      for (let i = index; i <= index + extra; i++) {
+    if (data && data.length > 0 && index >= 0) {
+      for (let i = index; i <= index + extra && i < data.length; i++) {
         const savedAudio = this.audioStorage.get(i);
         if (!savedAudio) {
-          promises.push(firstValueFrom(this.fetchAudio(i)));
+          await firstValueFrom(this.fetchAudio(i));
         }
       }
     }
-
-    return Promise.all(promises);
   }
 }
