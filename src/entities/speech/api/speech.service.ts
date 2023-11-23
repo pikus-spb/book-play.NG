@@ -22,7 +22,7 @@ const RETRY_NUMBER = 3;
 @Injectable({
   providedIn: 'root',
 })
-export class AudioSpeechService {
+export class SpeechService {
   constructor(
     private http: HttpClient,
     private httpUtils: HttpUtilsService
@@ -53,7 +53,7 @@ export class AudioSpeechService {
         retry(RETRY_NUMBER),
         catchError((err: any, caught: Observable<Blob>) => {
           console.error(err);
-          console.error('Audio API did not respond 3 times');
+          console.error(`Audio API did not respond ${RETRY_NUMBER} times`);
           return caught;
         })
       );
