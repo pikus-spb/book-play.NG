@@ -40,7 +40,7 @@ export class AudioPreloadingService {
   public async preloadParagraph(
     index: number,
     extra = PRELOAD_EXTRA.default
-  ): Promise<any> {
+  ): Promise<void> {
     const data = this.openedBook.book?.paragraphs;
 
     if (data && data.length > 0 && index >= 0) {
