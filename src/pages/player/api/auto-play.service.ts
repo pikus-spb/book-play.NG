@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay, Subject, tap } from 'rxjs';
 
 import { OpenedBookService } from 'src/features/opened-book';
 import { CursorPositionStoreService } from 'src/entities/cursor';
@@ -8,19 +8,22 @@ import { AudioPlayerService } from 'src/shared/api';
 import { LoadingService } from 'src/shared/ui';
 
 import { AudioStorageService } from '../model/audio-storage.service';
-import { AudioPreloadingService } from './audio-preloading.service';
-
-const DEFAULT_PRELOAD_EXTRA = {
-  zero: 0,
-  min: 1,
-  default: 3,
-};
+import {
+  AudioPreloadingService,
+  PRELOAD_EXTRA,
+} from './audio-preloading.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AutoPlayService implements OnDestroy {
   private destroyed$: Subject<void> = new Subject();
+  private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    true
+  );
+
+  public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
+  public ready$!: Observable<boolean>; // TODO:
 
   constructor(
     private openedBook: OpenedBookService,
@@ -40,43 +43,50 @@ export class AutoPlayService implements OnDestroy {
       .subscribe();
   }
 
+  private resume(): void {
+    this.audioPlayer.play();
+    this._paused$.next(false);
+  }
+
+  private pause(): void {
+    this.audioPlayer.pause();
+    this._paused$.next(true);
+  }
+
   public toggle(): void {
     if (this.audioPlayer.paused) {
-      this.autoPlay();
+      if (this.audioPlayer.stopped) {
+        this.start();
+      } else {
+        this.resume();
+      }
     } else {
-      // TODO: stop auto play
-      this.audioPlayer.pause();
+      this.pause();
     }
   }
 
-  public async autoPlay(index: number = this.cursorService.position) {
+  public async start(index: number = this.cursorService.position) {
     if (this.openedBook.book) {
+      this.audioPlayer.stop();
       this.cursorService.position = index;
 
-      await this.preloadHelper.preloadParagraph(
-        index,
-        DEFAULT_PRELOAD_EXTRA.min
-      );
-
-      while (
-        this.cursorService.position < this.openedBook.book.paragraphs.length
-      ) {
-        this.preloadHelper.preloadParagraph(
-          this.cursorService.position + DEFAULT_PRELOAD_EXTRA.default
-        );
-
+      this._paused$.next(false);
+      do {
         if (!this.audioStorage.get(this.cursorService.position)) {
           await this.preloadHelper.preloadParagraph(
             this.cursorService.position,
-            DEFAULT_PRELOAD_EXTRA.zero
+            PRELOAD_EXTRA.min
           );
         }
         this.audioPlayer.setAudio(
           this.audioStorage.get(this.cursorService.position)
         );
-        await this.audioPlayer.play();
         this.cursorService.position++;
-      }
+        await this.audioPlayer.play();
+      } while (
+        this.cursorService.position < this.openedBook.book.paragraphs.length &&
+        !this.audioPlayer.stopped
+      );
     }
   }
 
