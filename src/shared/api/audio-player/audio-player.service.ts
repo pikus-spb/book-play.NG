@@ -26,6 +26,7 @@ export class AudioPlayerService implements OnDestroy {
   public get paused(): boolean {
     return this.audio.paused;
   }
+
   public get stopped(): boolean {
     return this._stopped;
   }
