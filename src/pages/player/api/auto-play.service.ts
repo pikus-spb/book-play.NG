@@ -23,6 +23,7 @@ export class AutoPlayService implements OnDestroy {
   );
 
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
+  public ready$!: Observable<boolean>; // TODO:
 
   constructor(
     private openedBook: OpenedBookService,
@@ -42,27 +43,34 @@ export class AutoPlayService implements OnDestroy {
       .subscribe();
   }
 
+  private resume(): void {
+    this.audioPlayer.play();
+    this._paused$.next(false);
+  }
+
+  private pause(): void {
+    this.audioPlayer.pause();
+    this._paused$.next(true);
+  }
+
   public toggle(): void {
     if (this.audioPlayer.paused) {
       if (this.audioPlayer.stopped) {
-        this.play();
+        this.start();
       } else {
-        this.audioPlayer.play();
-        this._paused$.next(false);
+        this.resume();
       }
     } else {
-      this.audioPlayer.pause();
-      this._paused$.next(true);
+      this.pause();
     }
   }
 
-  public async play(index: number = this.cursorService.position) {
+  public async start(index: number = this.cursorService.position) {
     if (this.openedBook.book) {
       this.audioPlayer.stop();
-
-      this._paused$.next(false); // TODO: check audio service for paused$ - is it neeeded now?
       this.cursorService.position = index;
 
+      this._paused$.next(false);
       do {
         if (!this.audioStorage.get(this.cursorService.position)) {
           await this.preloadHelper.preloadParagraph(

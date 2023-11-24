@@ -1,25 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import {
-  BehaviorSubject,
-  firstValueFrom,
-  fromEvent,
-  merge,
-  Observable,
-  shareReplay,
-  Subject,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { firstValueFrom, fromEvent, merge, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AudioPlayerService implements OnDestroy {
-  private destroyed$: Subject<void> = new Subject<void>();
   private audio!: HTMLAudioElement;
-  private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    true
-  );
+  private destroyed$: Subject<void> = new Subject<void>();
   private _forceEnded$: Subject<void> = new Subject<void>();
   private _stopped = true;
 
@@ -39,23 +26,6 @@ export class AudioPlayerService implements OnDestroy {
     this.audio = document.createElement('audio');
     this.audio.setAttribute('hidden', 'true');
     document.body.appendChild(this.audio);
-
-    this.attachAudioEvents();
-  }
-
-  private attachAudioEvents(): void {
-    fromEvent(this.audio, 'paused').pipe(
-      takeUntil(this.destroyed$),
-      tap(() => this._paused$.next(true))
-    );
-    fromEvent(this.audio, 'play').pipe(
-      takeUntil(this.destroyed$),
-      tap(() => this._paused$.next(false))
-    );
-    fromEvent(this.audio, 'ended').pipe(
-      takeUntil(this.destroyed$),
-      tap(() => this._paused$.next(true))
-    );
   }
 
   public setAudio(base64Data: string): void {
