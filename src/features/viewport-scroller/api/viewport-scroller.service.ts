@@ -89,7 +89,7 @@ export function createViewportScrollerService(
   destroy$: Observable<void>
 ) {
   if (viewportScrollerSingleton != null) {
-    console.warn('Multiple viewport scroller creation!');
+    throw new Error('Multiple viewport scroller creation!');
   }
   viewportScrollerSingleton = new ViewportScrollerService(
     el,
