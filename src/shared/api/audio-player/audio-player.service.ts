@@ -7,7 +7,7 @@ import { firstValueFrom, fromEvent, merge, Subject } from 'rxjs';
 export class AudioPlayerService implements OnDestroy {
   private audio!: HTMLAudioElement;
   private destroyed$: Subject<void> = new Subject<void>();
-  private _forceEnded$: Subject<void> = new Subject<void>();
+  private _ended$: Subject<boolean> = new Subject<boolean>();
   private _stopped = true;
 
   public get paused(): boolean {
@@ -36,16 +36,16 @@ export class AudioPlayerService implements OnDestroy {
     this.audio.load();
   }
 
-  public async play(): Promise<void> {
-    const ended$ = fromEvent(this.audio, 'ended');
+  public async play(): Promise<boolean | Event> {
+    const reallyEnded$ = fromEvent(this.audio, 'ended');
     await this.audio.play();
     this._stopped = false;
-    await firstValueFrom(merge(this._forceEnded$, ended$));
+    return await firstValueFrom(merge(this._ended$, reallyEnded$));
   }
 
   public stop() {
     this.audio.pause();
-    this._forceEnded$.next();
+    this._ended$.next(false);
     this._stopped = true;
   }
 

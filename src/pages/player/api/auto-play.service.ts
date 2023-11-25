@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable, shareReplay, Subject, tap } from 'rxjs';
 import { OpenedBookService } from 'src/features/opened-book';
 import { CursorPositionStoreService } from 'src/entities/cursor';
 import { AudioPlayerService } from 'src/shared/api';
-import { LoadingService } from 'src/shared/ui';
 
 import { AudioStorageService } from '../model/audio-storage.service';
 import {
@@ -30,8 +29,7 @@ export class AutoPlayService implements OnDestroy {
     private audioPlayer: AudioPlayerService,
     private cursorService: CursorPositionStoreService,
     private audioStorage: AudioStorageService,
-    private preloadHelper: AudioPreloadingService,
-    private loadingService: LoadingService // TODO:
+    private preloadHelper: AudioPreloadingService
   ) {
     this.cursorService.position$
       .pipe(
@@ -53,6 +51,22 @@ export class AutoPlayService implements OnDestroy {
     this._paused$.next(true);
   }
 
+  private async ensureAudioDataReady() {
+    if (!this.audioStorage.get(this.cursorService.position)) {
+      await this.preloadHelper.preloadParagraph(
+        this.cursorService.position,
+        PRELOAD_EXTRA.min
+      );
+    }
+  }
+
+  private cursorPositionIsValid(): boolean {
+    return (
+      this.cursorService.position <
+      (this.openedBook.book ? this.openedBook.book.paragraphs.length : 0)
+    );
+  }
+
   public toggle(): void {
     if (this.audioPlayer.paused) {
       if (this.audioPlayer.stopped) {
@@ -69,24 +83,18 @@ export class AutoPlayService implements OnDestroy {
     if (this.openedBook.book) {
       this.audioPlayer.stop();
       this.cursorService.position = index;
-
       this._paused$.next(false);
+
       do {
-        if (!this.audioStorage.get(this.cursorService.position)) {
-          await this.preloadHelper.preloadParagraph(
-            this.cursorService.position,
-            PRELOAD_EXTRA.min
-          );
-        }
+        await this.ensureAudioDataReady();
+
         this.audioPlayer.setAudio(
           this.audioStorage.get(this.cursorService.position)
         );
-        this.cursorService.position++;
-        await this.audioPlayer.play();
-      } while (
-        this.cursorService.position < this.openedBook.book.paragraphs.length &&
-        !this.audioPlayer.stopped
-      );
+        if (await this.audioPlayer.play()) {
+          this.cursorService.position++;
+        }
+      } while (this.cursorPositionIsValid() && !this.audioPlayer.stopped);
     }
   }
 

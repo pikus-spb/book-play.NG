@@ -38,13 +38,16 @@ export class AudioPreloadingService {
   }
 
   public async preloadParagraph(
-    index: number,
+    startIndex: number,
     extra = PRELOAD_EXTRA.default
   ): Promise<void> {
     const data = this.openedBook.book?.paragraphs;
+    const dataIsValid = data && data.length > 0 && startIndex >= 0;
 
-    if (data && data.length > 0 && index >= 0) {
-      for (let i = index; i <= index + extra && i < data.length; i++) {
+    if (dataIsValid) {
+      const endIndex = startIndex + extra;
+
+      for (let i = startIndex; i <= endIndex && i < data.length; i++) {
         const savedAudio = this.audioStorage.get(i);
         if (!savedAudio) {
           await firstValueFrom(this.fetchAudio(i));
