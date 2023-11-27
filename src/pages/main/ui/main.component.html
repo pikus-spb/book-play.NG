@@ -9,7 +9,7 @@
 <mat-sidenav-container>
   <mat-sidenav
     #sidenav
-    opened
+    [opened]="(openedBook.book$ | async) === null"
     mode="over"
     autoFocus="false"
     (click)="sidenav.close()">

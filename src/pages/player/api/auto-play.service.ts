@@ -36,7 +36,6 @@ export class AutoPlayService implements OnDestroy {
   );
 
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
-  public ready$!: Observable<boolean>; // TODO:
 
   constructor(
     private openedBook: OpenedBookService,

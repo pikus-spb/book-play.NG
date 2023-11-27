@@ -9,5 +9,5 @@
   </button>
   <img src="/shared/assets/images/favicon.ico" alt="Book-play.ru логитип" />
   <h1>Book-play.ru</h1>
-  <player-button></player-button>
+  <player-button *ngIf="openedBookService.book$ | async"></player-button>
 </ng-container>
