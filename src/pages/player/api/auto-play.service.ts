@@ -13,7 +13,7 @@ import {
 
 import { PARAGRAPH_CLASS_PREFIX } from 'src/features/book-paragraph';
 import { OpenedBookService } from 'src/features/opened-book';
-import { viewportScrollerSingleton } from 'src/features/viewport-scroller';
+import { viewportScroller } from 'src/features/viewport-scroller';
 import { CursorPositionStoreService } from 'src/entities/cursor';
 import { BookData } from 'src/entities/fb2';
 import { AudioPlayerService } from 'src/shared/api';
@@ -87,10 +87,8 @@ export class AutoPlayService implements OnDestroy {
   }
 
   private async scrollToIndex(cursorIndex: number): Promise<void> {
-    if (viewportScrollerSingleton) {
-      await firstValueFrom(
-        viewportScrollerSingleton.scrollToIndex(cursorIndex)
-      );
+    if (viewportScroller) {
+      await firstValueFrom(viewportScroller.scrollToIndex(cursorIndex));
     }
   }
 

@@ -10,7 +10,7 @@ import {
   tap,
 } from 'rxjs';
 
-export let viewportScrollerSingleton: null | ViewportScrollerService = null;
+export let viewportScroller: null | ViewportScrollerService = null;
 
 class ViewportScrollerService {
   private scrollComplete$: Subject<void> = new Subject<void>();
@@ -27,7 +27,7 @@ class ViewportScrollerService {
         tap(() => {
           this.el = undefined;
           this.viewport = undefined;
-          viewportScrollerSingleton = null;
+          viewportScroller = null;
         })
       )
       .subscribe();
@@ -88,10 +88,10 @@ export function createViewportScrollerService(
   defaultElementTag: string,
   destroy$: Observable<void>
 ) {
-  if (viewportScrollerSingleton != null) {
+  if (viewportScroller != null) {
     throw new Error('Multiple viewport scroller creation!');
   }
-  viewportScrollerSingleton = new ViewportScrollerService(
+  viewportScroller = new ViewportScrollerService(
     el,
     viewport,
     defaultElementTag,
