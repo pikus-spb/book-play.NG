@@ -27,6 +27,8 @@ import {
 @Injectable({
   providedIn: 'root',
 })
+
+// TODO: split logic? "S"_OLID
 export class AutoPlayService implements OnDestroy {
   private destroyed$: Subject<void> = new Subject();
   private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
