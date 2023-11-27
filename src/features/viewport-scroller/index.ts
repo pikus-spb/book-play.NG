@@ -1,1 +1,4 @@
-export { ViewportScrollerService } from './api/viewport-scroller.service';
+export {
+  viewportScroller,
+  createViewportScrollerService,
+} from './api/viewport-scroller.service';

@@ -1,9 +1,21 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, Observable, shareReplay, Subject, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  delay,
+  firstValueFrom,
+  fromEvent,
+  Observable,
+  shareReplay,
+  Subject,
+  tap,
+} from 'rxjs';
 
+import { PARAGRAPH_CLASS_PREFIX } from 'src/features/book-paragraph';
 import { OpenedBookService } from 'src/features/opened-book';
+import { viewportScroller } from 'src/features/viewport-scroller';
 import { CursorPositionStoreService } from 'src/entities/cursor';
+import { BookData } from 'src/entities/fb2';
 import { AudioPlayerService } from 'src/shared/api';
 
 import { AudioStorageService } from '../model/audio-storage.service';
@@ -15,6 +27,8 @@ import {
 @Injectable({
   providedIn: 'root',
 })
+
+// TODO: split logic? "S"_OLID
 export class AutoPlayService implements OnDestroy {
   private destroyed$: Subject<void> = new Subject();
   private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
@@ -33,12 +47,51 @@ export class AutoPlayService implements OnDestroy {
   ) {
     this.cursorService.position$
       .pipe(
-        tap((position: number) => {
-          this.preloadHelper.preloadParagraph(position);
-        }),
-        takeUntilDestroyed()
+        takeUntilDestroyed(),
+        tap(() => {
+          this.makeParagraphActive(this.position);
+          this.preloadHelper.preloadParagraph(this.position);
+        })
       )
       .subscribe();
+
+    this.openedBook.book$
+      .pipe(
+        takeUntilDestroyed(),
+        delay(100), // give control to event loop and wait for ui to render
+        tap(async (book: BookData | null) => {
+          if (book) {
+            await this.scrollToIndex(this.position);
+            this.makeParagraphActive(this.position);
+            this.preloadHelper.preloadParagraph(this.position);
+          }
+        })
+      )
+      .subscribe();
+
+    fromEvent(window, 'resize')
+      .pipe(
+        takeUntilDestroyed(),
+        tap(async () => {
+          await this.scrollToIndex(this.position);
+          this.makeParagraphActive(this.position);
+        })
+      )
+      .subscribe();
+  }
+
+  private get position(): number {
+    return this.cursorService.position;
+  }
+
+  private set position(position: number) {
+    this.cursorService.position = position;
+  }
+
+  private async scrollToIndex(cursorIndex: number): Promise<void> {
+    if (viewportScroller) {
+      await firstValueFrom(viewportScroller.scrollToIndex(cursorIndex));
+    }
   }
 
   private resume(): void {
@@ -52,9 +105,9 @@ export class AutoPlayService implements OnDestroy {
   }
 
   private async ensureAudioDataReady() {
-    if (!this.audioStorage.get(this.cursorService.position)) {
+    if (!this.audioStorage.get(this.position)) {
       await this.preloadHelper.preloadParagraph(
-        this.cursorService.position,
+        this.position,
         PRELOAD_EXTRA.min
       );
     }
@@ -62,9 +115,19 @@ export class AutoPlayService implements OnDestroy {
 
   private cursorPositionIsValid(): boolean {
     return (
-      this.cursorService.position <
+      this.position <
       (this.openedBook.book ? this.openedBook.book.paragraphs.length : 0)
     );
+  }
+
+  private makeParagraphActive(index: number) {
+    const node = document.body.querySelector(
+      `.${PARAGRAPH_CLASS_PREFIX}${index}`
+    );
+    if (node != null) {
+      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      (node as HTMLElement).focus();
+    }
   }
 
   public toggle(): void {
@@ -79,20 +142,19 @@ export class AutoPlayService implements OnDestroy {
     }
   }
 
-  public async start(index: number = this.cursorService.position) {
+  public async start(index: number = this.position) {
     if (this.openedBook.book) {
       this.audioPlayer.stop();
-      this.cursorService.position = index;
+      this.position = index;
       this._paused$.next(false);
 
       do {
         await this.ensureAudioDataReady();
 
-        this.audioPlayer.setAudio(
-          this.audioStorage.get(this.cursorService.position)
-        );
+        this.audioPlayer.setAudio(this.audioStorage.get(this.position));
+
         if (await this.audioPlayer.play()) {
-          this.cursorService.position++;
+          this.position++;
         }
       } while (this.cursorPositionIsValid() && !this.audioPlayer.stopped);
     }

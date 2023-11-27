@@ -10,7 +10,9 @@ import {
   tap,
 } from 'rxjs';
 
-export class ViewportScrollerService {
+export let viewportScroller: null | ViewportScrollerService = null;
+
+class ViewportScrollerService {
   private scrollComplete$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -25,6 +27,7 @@ export class ViewportScrollerService {
         tap(() => {
           this.el = undefined;
           this.viewport = undefined;
+          viewportScroller = null;
         })
       )
       .subscribe();
@@ -77,4 +80,21 @@ export class ViewportScrollerService {
 
     return this.scrollComplete$.pipe(shareReplay(1));
   }
+}
+
+export function createViewportScrollerService(
+  el: ElementRef | undefined,
+  viewport: CdkVirtualScrollViewport | undefined,
+  defaultElementTag: string,
+  destroy$: Observable<void>
+) {
+  if (viewportScroller != null) {
+    throw new Error('Multiple viewport scroller creation!');
+  }
+  viewportScroller = new ViewportScrollerService(
+    el,
+    viewport,
+    defaultElementTag,
+    destroy$
+  );
 }

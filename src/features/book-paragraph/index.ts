@@ -1,1 +1,4 @@
-export { BookParagraphComponent } from './ui/book-paragraph.component';
+export {
+  BookParagraphComponent,
+  PARAGRAPH_CLASS_PREFIX,
+} from './ui/book-paragraph.component';
