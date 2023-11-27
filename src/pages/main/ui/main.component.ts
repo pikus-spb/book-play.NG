@@ -9,6 +9,7 @@ import {
 import { filter, tap } from 'rxjs';
 import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
+import { OpenedBookService } from 'src/features/opened-book';
 import { CopyrightComponent } from 'src/entities/copyright';
 import { MaterialModule } from 'src/shared/ui';
 import { LoadingService } from 'src/shared/ui';
@@ -28,11 +29,10 @@ import { LoadingService } from 'src/shared/ui';
   standalone: true,
 })
 export class MainComponent {
-  loading = false;
-
   constructor(
     private router: Router,
-    public loadingService: LoadingService
+    public loadingService: LoadingService,
+    public openedBook: OpenedBookService
   ) {
     this._subscribeToRouteChange();
   }

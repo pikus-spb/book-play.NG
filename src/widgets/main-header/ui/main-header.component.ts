@@ -5,6 +5,7 @@ import {
   Output,
 } from '@angular/core';
 import { PlayerButtonComponent } from 'src/features/audio-player';
+import { OpenedBookService } from 'src/features/opened-book';
 import { MaterialModule } from 'src/shared/ui';
 
 @Component({
@@ -17,4 +18,6 @@ import { MaterialModule } from 'src/shared/ui';
 })
 export class MainHeaderComponent {
   @Output() menuClick = new EventEmitter<void>();
+
+  constructor(public openedBookService: OpenedBookService) {}
 }
