@@ -123,10 +123,8 @@ export class AutoPlayService implements OnDestroy {
       `.${PARAGRAPH_CLASS_PREFIX}${index}`
     );
     if (node != null) {
-      setTimeout(() => {
-        node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        (node as HTMLElement).focus();
-      }, 100);
+      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      (node as HTMLElement).focus();
     }
   }
 
