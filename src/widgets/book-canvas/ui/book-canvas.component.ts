@@ -53,14 +53,6 @@ export class BookCanvasComponent implements AfterViewInit, OnDestroy {
     public eventState: EventsStateService
   ) {
     this.scrolling$ = this.eventState.get$(Events.scrolling);
-    this.scrolling$
-      .pipe(
-        takeUntilDestroyed(),
-        tap((loading: boolean) => {
-          this.eventState.add(Events.loading, loading);
-        })
-      )
-      .subscribe();
   }
 
   public onParagraphClick(index: number): void {
