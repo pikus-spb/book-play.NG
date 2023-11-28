@@ -50,7 +50,7 @@ export class AutoPlayService implements OnDestroy {
       .pipe(
         takeUntilDestroyed(),
         tap(() => {
-          this.makeParagraphActive(this.position);
+          this.showActiveParagraph(this.position);
           this.preloadHelper.preloadParagraph(this.position);
         })
       )
@@ -62,8 +62,7 @@ export class AutoPlayService implements OnDestroy {
         delay(100), // give control to event loop and wait for ui to render
         tap(async (book: BookData | null) => {
           if (book) {
-            await this.scrollToIndex(this.position);
-            this.makeParagraphActive(this.position);
+            this.showActiveParagraph(this.position);
             this.preloadHelper.preloadParagraph(this.position);
           }
         })
@@ -74,8 +73,7 @@ export class AutoPlayService implements OnDestroy {
       .pipe(
         takeUntilDestroyed(),
         tap(async () => {
-          await this.scrollToIndex(this.position);
-          this.makeParagraphActive(this.position);
+          this.showActiveParagraph(this.position);
         })
       )
       .subscribe();
@@ -123,14 +121,24 @@ export class AutoPlayService implements OnDestroy {
     );
   }
 
-  private makeParagraphActive(index: number) {
-    const node = document.body.querySelector(
-      `.${PARAGRAPH_CLASS_PREFIX}${index}`
-    );
-    if (node != null) {
-      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      (node as HTMLElement).focus();
+  private getParagraphNode(index: number): HTMLElement | null {
+    return document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
+  }
+
+  public async showActiveParagraph(index = this.position) {
+    let node = this.getParagraphNode(index);
+
+    if (viewportScroller && !node) {
+      await this.scrollToIndex(index);
+      node = document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
     }
+
+    setTimeout(() => {
+      if (node) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        (node as HTMLElement).focus();
+      }
+    }, 100);
   }
 
   public toggle(): void {

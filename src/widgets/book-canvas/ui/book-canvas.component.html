@@ -1,24 +1,32 @@
-<div
-  class="main-container"
-  [class.scrolling]="scrolling$ | async"
-  *ngIf="book$ | async as book"
-  cdkVirtualScrollingElement>
-  <h1>{{ book.author.first }} {{ book.author.last }} - {{ book.bookTitle }}</h1>
+<div>
+  <div *ngIf="scrolling$ | async" class="skeleton-container">
+    <canvas-skeleton></canvas-skeleton>
+  </div>
+  <div
+    class="scrollable-canvas"
+    [class.scrolling]="scrolling$ | async"
+    *ngIf="book$ | async as book"
+    cdkVirtualScrollingElement>
+    <h1>
+      {{ book.author.first }} {{ book.author.last }} - {{ book.bookTitle }}
+    </h1>
 
-  <section class="title-picture-container">
-    <img *ngIf="book.bookTitlePicture" [src]="book.bookTitlePicture" />
-  </section>
-  <cdk-virtual-scroll-viewport
-    #scrollViewport
-    autosize
-    class="infinite-scroll-container"
-    [style.visibility]="(scrolling$ | async) ? 'hidden' : 'visible'">
-    <book-paragraph
-      *cdkVirtualFor="let text of book.paragraphs; index as index"
-      [index]="index"
-      [text]="text"
-      (click)="onParagraphClick(index)"
-      class="scroll-item">
-    </book-paragraph>
-  </cdk-virtual-scroll-viewport>
+    <section class="title-picture-container">
+      <img *ngIf="book.bookTitlePicture" [src]="book.bookTitlePicture" />
+    </section>
+
+    <cdk-virtual-scroll-viewport
+      #scrollViewport
+      autosize
+      class="infinite-scroll-container"
+      [style.visibility]="(scrolling$ | async) ? 'hidden' : 'visible'">
+      <book-paragraph
+        *cdkVirtualFor="let text of book.paragraphs; index as index"
+        [index]="index"
+        [text]="text"
+        (click)="onParagraphClick(index)"
+        class="scroll-item">
+      </book-paragraph>
+    </cdk-virtual-scroll-viewport>
+  </div>
 </div>

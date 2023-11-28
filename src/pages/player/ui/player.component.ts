@@ -4,7 +4,9 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { delay, filter, Observable, tap } from 'rxjs';
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
 import { BookData } from 'src/entities/fb2';
@@ -24,8 +26,24 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   constructor(
     private openedBookService: OpenedBookService,
-    private autoPlay: AutoPlayService
-  ) {}
+    private autoPlay: AutoPlayService,
+    private router: Router
+  ) {
+    this.router.events
+      .pipe(
+        takeUntilDestroyed(),
+        filter(event => {
+          return (
+            event instanceof NavigationEnd && this.router.url === '/player'
+          );
+        }),
+        delay(100),
+        tap(() => {
+          this.autoPlay.showActiveParagraph();
+        })
+      )
+      .subscribe();
+  }
 
   public playParagraph(index: number): void {
     this.autoPlay.start(index);
