@@ -18,6 +18,7 @@ import { CursorPositionStoreService } from 'src/entities/cursor';
 import { BookData } from 'src/entities/fb2';
 import { AudioPlayerService } from 'src/shared/api';
 
+import { Events, EventsStateService } from '../../../shared/ui';
 import { AudioStorageService } from '../model/audio-storage.service';
 import {
   AudioPreloadingService,
@@ -42,7 +43,8 @@ export class AutoPlayService implements OnDestroy {
     private audioPlayer: AudioPlayerService,
     private cursorService: CursorPositionStoreService,
     private audioStorage: AudioStorageService,
-    private preloadHelper: AudioPreloadingService
+    private preloadHelper: AudioPreloadingService,
+    private eventStateService: EventsStateService
   ) {
     this.cursorService.position$
       .pipe(
@@ -89,7 +91,9 @@ export class AutoPlayService implements OnDestroy {
 
   private async scrollToIndex(cursorIndex: number): Promise<void> {
     if (viewportScroller) {
+      this.eventStateService.add(Events.scrolling, true);
       await firstValueFrom(viewportScroller.scrollToIndex(cursorIndex));
+      this.eventStateService.add(Events.scrolling, false);
     }
   }
 

@@ -4,7 +4,7 @@
 <mat-progress-bar
   mode="indeterminate"
   [style.visibility]="
-    (loadingService.loading$ | async) ? 'visible' : 'hidden'
+    (loading$ | async) ? 'visible' : 'hidden'
   "></mat-progress-bar>
 <mat-sidenav-container>
   <mat-sidenav

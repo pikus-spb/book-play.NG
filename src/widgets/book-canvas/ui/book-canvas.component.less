@@ -16,6 +16,14 @@
     font-family: Literata, sans-serif !important;
   }
 
+  &.scrolling {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   h1,
   section {
     padding: 0 @defaultPadding * 2;

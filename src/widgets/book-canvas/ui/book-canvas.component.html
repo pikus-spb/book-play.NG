@@ -1,5 +1,6 @@
 <div
   class="main-container"
+  [class.scrolling]="scrolling$ | async"
   *ngIf="book$ | async as book"
   cdkVirtualScrollingElement>
   <h1>{{ book.author.first }} {{ book.author.last }} - {{ book.bookTitle }}</h1>
@@ -7,11 +8,11 @@
   <section class="title-picture-container">
     <img *ngIf="book.bookTitlePicture" [src]="book.bookTitlePicture" />
   </section>
-
   <cdk-virtual-scroll-viewport
     #scrollViewport
     autosize
-    class="infinite-scroll-container">
+    class="infinite-scroll-container"
+    [style.visibility]="(scrolling$ | async) ? 'hidden' : 'visible'">
     <book-paragraph
       *cdkVirtualFor="let text of book.paragraphs; index as index"
       [index]="index"
