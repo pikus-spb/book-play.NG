@@ -4,9 +4,23 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: @defaultPadding * 2;
   max-width: 100%;
   height: 100%;
+  background: url('/shared/assets/images/book-paper.jpg') no-repeat center
+    center fixed;
+  background-size: cover;
+  padding-top: 2 * @defaultPadding;
+  font-family: Literata, sans-serif !important;
+  color: black;
+
+  & * {
+    font-family: Literata, sans-serif !important;
+  }
+
+  h1,
+  section {
+    padding: 0 @defaultPadding * 2;
+  }
 
   img {
     max-width: 100%;
