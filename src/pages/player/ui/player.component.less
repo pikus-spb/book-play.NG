@@ -1,0 +1,22 @@
+:host {
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('/shared/assets/images/book-paper.jpg');
+    background-repeat: repeat;
+    z-index: 100;
+    opacity: 85%;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgb(230 230 230);
+    z-index: 99;
+  }
+}
