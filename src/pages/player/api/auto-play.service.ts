@@ -133,11 +133,10 @@ export class AutoPlayService implements OnDestroy {
 
     if (viewportScroller && !node) {
       await this.scrollToIndex(index);
+      await firstValueFrom(timer(100));
+
       node = this.getParagraphNode(index);
     }
-
-    await firstValueFrom(timer(100));
-
     if (node) {
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
       (node as HTMLElement).focus();
