@@ -133,7 +133,7 @@ export class AutoPlayService implements OnDestroy {
 
     if (viewportScroller && !node) {
       await this.scrollToIndex(index);
-      node = document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
+      node = this.getParagraphNode(index);
     }
 
     await firstValueFrom(timer(100));
