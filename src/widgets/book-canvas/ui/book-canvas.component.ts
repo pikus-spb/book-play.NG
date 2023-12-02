@@ -15,11 +15,13 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, Subject, tap } from 'rxjs';
 import { BookParagraphComponent } from 'src/features/book-paragraph';
 import { createViewportScrollerService } from 'src/features/viewport-scroller';
 import { BookData } from 'src/entities/fb2';
-import { MaterialModule } from 'src/shared/ui';
+import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
+import { CanvasSkeletonComponent } from './canvas-skeleton.component';
 
 const PARAGRAPH_TAG = 'book-paragraph';
 
@@ -34,6 +36,7 @@ const PARAGRAPH_TAG = 'book-paragraph';
     ScrollingModule,
     ExperimentalScrollingModule,
     BookParagraphComponent,
+    CanvasSkeletonComponent,
   ],
 })
 export class BookCanvasComponent implements AfterViewInit, OnDestroy {
@@ -43,7 +46,14 @@ export class BookCanvasComponent implements AfterViewInit, OnDestroy {
 
   private destroyed$: Subject<void> = new Subject<void>();
 
-  constructor(private el: ElementRef) {}
+  public scrolling$: Observable<boolean>;
+
+  constructor(
+    private el: ElementRef,
+    public eventState: EventsStateService
+  ) {
+    this.scrolling$ = this.eventState.get$(Events.scrolling);
+  }
 
   public onParagraphClick(index: number): void {
     this.paragraphClick.emit(index);

@@ -6,13 +6,13 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { filter, tap } from 'rxjs';
+import { filter, Observable, tap } from 'rxjs';
 import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
 import { OpenedBookService } from 'src/features/opened-book';
 import { CopyrightComponent } from 'src/entities/copyright';
 import { MaterialModule } from 'src/shared/ui';
-import { LoadingService } from 'src/shared/ui';
+import { EventsStateService, Events } from 'src/shared/ui';
 
 @Component({
   selector: 'main',
@@ -29,12 +29,15 @@ import { LoadingService } from 'src/shared/ui';
   standalone: true,
 })
 export class MainComponent {
+  public loading$: Observable<boolean>;
+
   constructor(
     private router: Router,
-    public loadingService: LoadingService,
+    public eventStatesService: EventsStateService,
     public openedBook: OpenedBookService
   ) {
     this._subscribeToRouteChange();
+    this.loading$ = eventStatesService.get$(Events.loading);
   }
 
   private _subscribeToRouteChange() {
@@ -43,7 +46,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationStart),
         tap(() => {
-          this.loadingService.loading = true;
+          this.eventStatesService.add(Events.loading, true);
         })
       )
       .subscribe();
@@ -52,7 +55,7 @@ export class MainComponent {
         takeUntilDestroyed(),
         filter(event => event instanceof NavigationEnd),
         tap(() => {
-          this.loadingService.loading = false;
+          this.eventStatesService.add(Events.loading, false);
         })
       )
       .subscribe();

@@ -9,6 +9,7 @@ import {
   shareReplay,
   Subject,
   tap,
+  timer,
 } from 'rxjs';
 
 import { PARAGRAPH_CLASS_PREFIX } from 'src/features/book-paragraph';
@@ -18,6 +19,7 @@ import { CursorPositionStoreService } from 'src/entities/cursor';
 import { BookData } from 'src/entities/fb2';
 import { AudioPlayerService } from 'src/shared/api';
 
+import { Events, EventsStateService } from '../../../shared/ui';
 import { AudioStorageService } from '../model/audio-storage.service';
 import {
   AudioPreloadingService,
@@ -42,13 +44,14 @@ export class AutoPlayService implements OnDestroy {
     private audioPlayer: AudioPlayerService,
     private cursorService: CursorPositionStoreService,
     private audioStorage: AudioStorageService,
-    private preloadHelper: AudioPreloadingService
+    private preloadHelper: AudioPreloadingService,
+    private eventStateService: EventsStateService
   ) {
     this.cursorService.position$
       .pipe(
         takeUntilDestroyed(),
         tap(() => {
-          this.makeParagraphActive(this.position);
+          this.showActiveParagraph(this.position);
           this.preloadHelper.preloadParagraph(this.position);
         })
       )
@@ -57,11 +60,9 @@ export class AutoPlayService implements OnDestroy {
     this.openedBook.book$
       .pipe(
         takeUntilDestroyed(),
-        delay(100), // give control to event loop and wait for ui to render
-        tap(async (book: BookData | null) => {
+        tap((book: BookData | null) => {
           if (book) {
-            await this.scrollToIndex(this.position);
-            this.makeParagraphActive(this.position);
+            this.showActiveParagraph(this.position);
             this.preloadHelper.preloadParagraph(this.position);
           }
         })
@@ -71,9 +72,8 @@ export class AutoPlayService implements OnDestroy {
     fromEvent(window, 'resize')
       .pipe(
         takeUntilDestroyed(),
-        tap(async () => {
-          await this.scrollToIndex(this.position);
-          this.makeParagraphActive(this.position);
+        tap(() => {
+          this.showActiveParagraph(this.position);
         })
       )
       .subscribe();
@@ -89,7 +89,9 @@ export class AutoPlayService implements OnDestroy {
 
   private async scrollToIndex(cursorIndex: number): Promise<void> {
     if (viewportScroller) {
+      this.eventStateService.add(Events.scrolling, true);
       await firstValueFrom(viewportScroller.scrollToIndex(cursorIndex));
+      this.eventStateService.add(Events.scrolling, false);
     }
   }
 
@@ -119,11 +121,22 @@ export class AutoPlayService implements OnDestroy {
     );
   }
 
-  private makeParagraphActive(index: number) {
-    const node = document.body.querySelector(
-      `.${PARAGRAPH_CLASS_PREFIX}${index}`
-    );
-    if (node != null) {
+  private getParagraphNode(index: number): HTMLElement | null {
+    return document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
+  }
+
+  public async showActiveParagraph(index = this.position) {
+    await firstValueFrom(timer(100));
+
+    let node = this.getParagraphNode(index);
+
+    if (viewportScroller && !node) {
+      await this.scrollToIndex(index);
+      await firstValueFrom(timer(100));
+
+      node = this.getParagraphNode(index);
+    }
+    if (node) {
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
       (node as HTMLElement).focus();
     }

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
-import { PlayerGuardService } from 'src/pages/player';
 
 const routes: Route[] = [
   {
@@ -10,31 +9,14 @@ const routes: Route[] = [
     },
     children: [
       {
-        path: 'home',
-        loadComponent() {
-          return import('src/pages/home').then(
-            imported => imported.HomeComponent
-          );
-        },
-      },
-      {
-        path: 'settings',
-        loadComponent() {
-          return import('src/pages/settings').then(
-            imported => imported.SettingsComponent
-          );
-        },
-      },
-      {
         path: 'player',
         loadComponent() {
           return import('src/pages/player').then(
             imported => imported.PlayerComponent
           );
         },
-        canMatch: [PlayerGuardService],
       },
-      { path: '**', redirectTo: 'home' },
+      { path: '**', redirectTo: 'player' },
     ],
   },
 ];
