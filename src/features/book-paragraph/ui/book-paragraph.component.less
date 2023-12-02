@@ -2,17 +2,16 @@
 
 p {
   cursor: pointer;
-  text-align: justify;
   padding: 0 @defaultPadding * 2;
-  font-size: 0.93rem;
-  color: rgb(0 0 0 / 90%);
+  text-align: justify;
+  color: rgb(200 200 200);
 
   &:focus {
     font-weight: bold;
 
     &:before {
-      content: '\21e8';
       margin-left: -@defaultPadding;
+      content: '\21e8';
     }
   }
 

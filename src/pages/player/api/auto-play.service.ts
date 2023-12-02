@@ -9,6 +9,7 @@ import {
   shareReplay,
   Subject,
   tap,
+  timer,
 } from 'rxjs';
 
 import { PARAGRAPH_CLASS_PREFIX } from 'src/features/book-paragraph';
@@ -126,6 +127,8 @@ export class AutoPlayService implements OnDestroy {
   }
 
   public async showActiveParagraph(index = this.position) {
+    await firstValueFrom(timer(100));
+
     let node = this.getParagraphNode(index);
 
     if (viewportScroller && !node) {
@@ -133,12 +136,12 @@ export class AutoPlayService implements OnDestroy {
       node = document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
     }
 
-    setTimeout(() => {
-      if (node) {
-        node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        (node as HTMLElement).focus();
-      }
-    }, 100);
+    await firstValueFrom(timer(100));
+
+    if (node) {
+      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      (node as HTMLElement).focus();
+    }
   }
 
   public toggle(): void {
