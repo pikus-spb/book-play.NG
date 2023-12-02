@@ -60,8 +60,7 @@ export class AutoPlayService implements OnDestroy {
     this.openedBook.book$
       .pipe(
         takeUntilDestroyed(),
-        delay(100), // give control to event loop and wait for ui to render
-        tap(async (book: BookData | null) => {
+        tap((book: BookData | null) => {
           if (book) {
             this.showActiveParagraph(this.position);
             this.preloadHelper.preloadParagraph(this.position);
@@ -73,7 +72,7 @@ export class AutoPlayService implements OnDestroy {
     fromEvent(window, 'resize')
       .pipe(
         takeUntilDestroyed(),
-        tap(async () => {
+        tap(() => {
           this.showActiveParagraph(this.position);
         })
       )
