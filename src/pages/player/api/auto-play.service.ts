@@ -124,7 +124,7 @@ export class AutoPlayService implements OnDestroy {
     return document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
   }
 
-  private highlightParagraphs(element: HTMLElement): void {
+  private updateActiveCSSClass(element: HTMLElement): void {
     document.body.querySelector('.active')?.classList.remove('active');
     element.classList.add('active');
   }
@@ -142,7 +142,7 @@ export class AutoPlayService implements OnDestroy {
     }
     if (node) {
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      this.highlightParagraphs(node as HTMLElement);
+      this.updateActiveCSSClass(node as HTMLElement);
     }
   }
 
