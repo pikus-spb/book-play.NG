@@ -125,7 +125,7 @@ export class AutoPlayService implements OnDestroy {
   }
 
   private updateActiveCSSClass(element: HTMLElement): void {
-    document.body.querySelector('.active')?.classList.remove('active');
+    document.body.querySelector('p.active')?.classList.remove('active');
     element.classList.add('active');
   }
 
