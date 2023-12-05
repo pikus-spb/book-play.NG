@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
-  delay,
   firstValueFrom,
   fromEvent,
   Observable,
@@ -125,6 +124,11 @@ export class AutoPlayService implements OnDestroy {
     return document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
   }
 
+  private updateActiveCSSClass(element: HTMLElement): void {
+    document.body.querySelector('p.active')?.classList.remove('active');
+    element.classList.add('active');
+  }
+
   public async showActiveParagraph(index = this.position) {
     await firstValueFrom(timer(100));
 
@@ -138,7 +142,7 @@ export class AutoPlayService implements OnDestroy {
     }
     if (node) {
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      (node as HTMLElement).focus();
+      this.updateActiveCSSClass(node as HTMLElement);
     }
   }
 

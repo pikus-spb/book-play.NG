@@ -6,16 +6,12 @@ p {
   text-align: justify;
   color: rgb(200 200 200);
 
-  &:focus {
+  &.active {
     font-weight: bold;
 
     &:before {
       margin-left: -@defaultPadding;
       content: '\21e8';
     }
-  }
-
-  &:focus-visible {
-    outline: 0;
   }
 }

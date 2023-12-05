@@ -15,8 +15,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, Subject, tap } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { BookParagraphComponent } from 'src/features/book-paragraph';
 import { createViewportScrollerService } from 'src/features/viewport-scroller';
 import { BookData } from 'src/entities/fb2';
