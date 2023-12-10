@@ -14,6 +14,7 @@ export let viewportScroller: null | ViewportScrollerService = null;
 
 class ViewportScrollerService {
   private scrollComplete$: Subject<void> = new Subject<void>();
+  public scrolled$!: Observable<Event>;
 
   constructor(
     private el: ElementRef | undefined,
@@ -31,6 +32,10 @@ class ViewportScrollerService {
         })
       )
       .subscribe();
+
+    if (this.viewport) {
+      this.scrolled$ = this.viewport.scrollable.elementScrolled();
+    }
   }
 
   private scrollToLastVisibleElement() {

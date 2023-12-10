@@ -51,7 +51,7 @@ export class BookCanvasComponent implements AfterViewInit, OnDestroy {
     private el: ElementRef,
     public eventState: EventsStateService
   ) {
-    this.scrolling$ = this.eventState.get$(Events.scrolling);
+    this.scrolling$ = this.eventState.get$(Events.scrollingIntoView);
   }
 
   public onParagraphClick(index: number): void {

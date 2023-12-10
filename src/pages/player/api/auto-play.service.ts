@@ -8,6 +8,7 @@ import {
   Observable,
   shareReplay,
   Subject,
+  takeUntil,
   tap,
   timer,
 } from 'rxjs';
@@ -36,9 +37,10 @@ export class AutoPlayService implements OnDestroy {
   private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     true
   );
-  private scrolling$!: Observable<boolean>;
+  private scrollingIntoView$!: Observable<boolean>;
 
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
+  public scrolled$?: Observable<Event>;
 
   constructor(
     private openedBook: OpenedBookService,
@@ -79,8 +81,26 @@ export class AutoPlayService implements OnDestroy {
       )
       .subscribe();
 
-    this.scrolling$ = this.eventStateService.get$(Events.scrolling);
-    this.scrolling$.subscribe();
+    this.scrollingIntoView$ = this.eventStateService
+      .get$(Events.scrollingIntoView)
+      .pipe(takeUntil(this.destroyed$));
+    this.scrollingIntoView$.subscribe();
+  }
+
+  private attachScrollingEvent() {
+    if (viewportScroller) {
+      this.scrolled$ = viewportScroller.scrolled$;
+
+      this.scrolled$
+        ?.pipe(
+          takeUntil(this.destroyed$),
+          tap(() => {
+            const node = this.getParagraphNode(this.position);
+            this.updateActiveCSSClass(node);
+          })
+        )
+        .subscribe();
+    }
   }
 
   private get position(): number {
@@ -93,9 +113,9 @@ export class AutoPlayService implements OnDestroy {
 
   private async scrollToIndex(cursorIndex: number): Promise<void> {
     if (viewportScroller) {
-      this.eventStateService.add(Events.scrolling, true);
+      this.eventStateService.add(Events.scrollingIntoView, true);
       await firstValueFrom(viewportScroller.scrollToIndex(cursorIndex));
-      this.eventStateService.add(Events.scrolling, false);
+      this.eventStateService.add(Events.scrollingIntoView, false);
     }
   }
 
@@ -129,9 +149,9 @@ export class AutoPlayService implements OnDestroy {
     return document.body.querySelector(`.${PARAGRAPH_CLASS_PREFIX}${index}`);
   }
 
-  private updateActiveCSSClass(element: HTMLElement): void {
+  private updateActiveCSSClass(element: HTMLElement | null): void {
     document.body.querySelector('p.active')?.classList.remove('active');
-    element.classList.add('active');
+    element?.classList.add('active');
   }
 
   public async showActiveParagraph(index = this.position) {
@@ -148,6 +168,10 @@ export class AutoPlayService implements OnDestroy {
     if (node) {
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
       this.updateActiveCSSClass(node as HTMLElement);
+    }
+
+    if (viewportScroller && !this.scrolled$) {
+      this.attachScrollingEvent(); // TODO: find a better place
     }
   }
 
@@ -170,10 +194,12 @@ export class AutoPlayService implements OnDestroy {
       this._paused$.next(false);
 
       do {
-        const isScrollingNow = await firstValueFrom(this.scrolling$);
+        const isScrollingNow = await firstValueFrom(this.scrollingIntoView$);
         if (isScrollingNow) {
           // wait until scrolling is false
-          await firstValueFrom(this.scrolling$.pipe(filter(value => !value)));
+          await firstValueFrom(
+            this.scrollingIntoView$.pipe(filter(value => !value))
+          );
         }
 
         await this.ensureAudioDataReady();

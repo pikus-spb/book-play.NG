@@ -8,7 +8,7 @@ interface EventState {
 
 export enum Events {
   loading = 'loading',
-  scrolling = 'scrolling',
+  scrollingIntoView = 'scrollingIntoView',
 }
 
 @Injectable({
@@ -20,7 +20,7 @@ export class EventsStateService implements OnDestroy {
 
   constructor() {
     // Initial values
-    this.add(Events.scrolling, false);
+    this.add(Events.scrollingIntoView, false);
     this.add(Events.loading, false);
   }
 
