@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { filter, map, Observable, Subject } from 'rxjs';
+import { filter, map, Observable, shareReplay, Subject } from 'rxjs';
 
 interface EventState {
   name: string;
@@ -18,6 +18,12 @@ export class EventsStateService implements OnDestroy {
   private _events$: Subject<EventState> = new Subject<EventState>();
   private _destroyed$: Subject<void> = new Subject<void>();
 
+  constructor() {
+    // Initial values
+    this.add(Events.scrolling, false);
+    this.add(Events.loading, false);
+  }
+
   public add(name: Events, state: boolean) {
     this._events$.next({ name, state });
   }
@@ -25,6 +31,7 @@ export class EventsStateService implements OnDestroy {
   public get$(name: Events): Observable<boolean> {
     return this._events$.pipe(
       filter((state: EventState) => state.name === name),
+      shareReplay(1),
       map((state: EventState) => state.state)
     );
   }

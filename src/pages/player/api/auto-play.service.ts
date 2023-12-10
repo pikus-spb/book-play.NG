@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
+  filter,
   firstValueFrom,
   fromEvent,
   Observable,
@@ -35,6 +36,7 @@ export class AutoPlayService implements OnDestroy {
   private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     true
   );
+  private scrolling$!: Observable<boolean>;
 
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
 
@@ -76,6 +78,9 @@ export class AutoPlayService implements OnDestroy {
         })
       )
       .subscribe();
+
+    this.scrolling$ = this.eventStateService.get$(Events.scrolling);
+    this.scrolling$.subscribe();
   }
 
   private get position(): number {
@@ -165,6 +170,12 @@ export class AutoPlayService implements OnDestroy {
       this._paused$.next(false);
 
       do {
+        const isScrollingNow = await firstValueFrom(this.scrolling$);
+        if (isScrollingNow) {
+          // wait until scrolling is false
+          await firstValueFrom(this.scrolling$.pipe(filter(value => !value)));
+        }
+
         await this.ensureAudioDataReady();
 
         this.audioPlayer.setAudio(this.audioStorage.get(this.position));
