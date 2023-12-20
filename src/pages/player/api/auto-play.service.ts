@@ -37,7 +37,6 @@ export class AutoPlayService implements OnDestroy {
   private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     true
   );
-  private scrollingIntoView$!: Observable<boolean>;
 
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
   public scrolled$?: Observable<Event>;
@@ -80,11 +79,6 @@ export class AutoPlayService implements OnDestroy {
         })
       )
       .subscribe();
-
-    this.scrollingIntoView$ = this.eventStateService
-      .get$(Events.scrollingIntoView)
-      .pipe(takeUntil(this.destroyed$));
-    this.scrollingIntoView$.subscribe();
   }
 
   private attachScrollingEvent() {
@@ -194,11 +188,15 @@ export class AutoPlayService implements OnDestroy {
       this._paused$.next(false);
 
       do {
-        const isScrollingNow = await firstValueFrom(this.scrollingIntoView$);
+        const isScrollingNow = await firstValueFrom(
+          this.eventStateService.get$(Events.scrollingIntoView)
+        );
         if (isScrollingNow) {
           // wait until scrolling is false
           await firstValueFrom(
-            this.scrollingIntoView$.pipe(filter(value => !value))
+            this.eventStateService
+              .get$(Events.scrollingIntoView)
+              .pipe(filter(value => !value))
           );
         }
 

@@ -1,10 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { filter, map, Observable, shareReplay, Subject } from 'rxjs';
-
-interface EventState {
-  name: string;
-  state: boolean;
-}
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 export enum Events {
   loading = 'loading',
@@ -15,25 +10,21 @@ export enum Events {
   providedIn: 'root',
 })
 export class EventsStateService implements OnDestroy {
-  private _events$: Subject<EventState> = new Subject<EventState>();
+  private _events$: Record<string, BehaviorSubject<boolean>> = {};
   private _destroyed$: Subject<void> = new Subject<void>();
 
   constructor() {
-    // Initial values
-    this.add(Events.scrollingIntoView, false);
-    this.add(Events.loading, false);
+    for (const event in Events) {
+      this._events$[event] = new BehaviorSubject(false);
+    }
   }
 
   public add(name: Events, state: boolean) {
-    this._events$.next({ name, state });
+    this._events$[name].next(state);
   }
 
   public get$(name: Events): Observable<boolean> {
-    return this._events$.pipe(
-      filter((state: EventState) => state.name === name),
-      shareReplay(1),
-      map((state: EventState) => state.state)
-    );
+    return this._events$[name];
   }
 
   ngOnDestroy() {

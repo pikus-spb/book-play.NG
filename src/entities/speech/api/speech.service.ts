@@ -4,7 +4,8 @@ import { catchError, Observable, retry } from 'rxjs';
 
 import { HttpUtilsService } from 'src/shared/lib';
 
-const AUDIO_API_URL = 'https://tts.voicetech.yandex.net/generate';
+// const AUDIO_API_URL = 'https://tts.voicetech.yandex.net/generate';
+const AUDIO_API_URL = 'https://pikus-dev.space/tts-api/test.php';
 const AUDIO_API_DEFAULT_OPTIONS = Object.freeze({
   key: '069b6659-984b-4c5f-880e-aaedcfd84102',
   format: 'mp3',
@@ -36,10 +37,10 @@ export class SpeechService {
     text = encodeURIComponent(text);
 
     const options = {
-      ...AUDIO_API_DEFAULT_OPTIONS,
+      // ...AUDIO_API_DEFAULT_OPTIONS,
       text,
-      speaker,
-      speed,
+      // speaker,
+      // speed,
     };
 
     const postParams = this.httpUtils.createQueryParameters(options);
