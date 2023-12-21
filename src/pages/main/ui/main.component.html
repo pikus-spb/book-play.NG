@@ -7,16 +7,14 @@
     (loading$ | async) ? 'visible' : 'hidden'
   "></mat-progress-bar>
 <mat-sidenav-container>
-  <mat-sidenav
-    #sidenav
-    [opened]="(openedBook.book$ | async) === null"
-    mode="over"
-    autoFocus="false"
-    (click)="sidenav.close()">
+  <mat-sidenav #sidenav mode="over" autoFocus="false" (click)="sidenav.close()">
     <main-menu></main-menu>
     <copyright></copyright>
   </mat-sidenav>
   <mat-sidenav-content>
-    <router-outlet></router-outlet>
+    <div class="background"></div>
+    <div class="router-outlet-container">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
