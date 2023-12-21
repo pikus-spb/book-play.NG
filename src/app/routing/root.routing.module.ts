@@ -9,6 +9,14 @@ const routes: Route[] = [
     },
     children: [
       {
+        path: 'welcome',
+        loadComponent() {
+          return import('src/pages/welcome').then(
+            imported => imported.WelcomeComponent
+          );
+        },
+      },
+      {
         path: 'player',
         loadComponent() {
           return import('src/pages/player').then(
@@ -16,7 +24,7 @@ const routes: Route[] = [
           );
         },
       },
-      { path: '**', redirectTo: 'player' },
+      { path: '**', redirectTo: 'welcome' },
     ],
   },
 ];
