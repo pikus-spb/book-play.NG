@@ -24,6 +24,22 @@ const routes: Route[] = [
           );
         },
       },
+      {
+        path: 'voice',
+        loadComponent() {
+          return import('src/pages/voice').then(
+            imported => imported.VoiceComponent
+          );
+        },
+      },
+      {
+        path: 'library',
+        loadComponent() {
+          return import('src/pages/library').then(
+            imported => imported.LibraryComponent
+          );
+        },
+      },
       { path: '**', redirectTo: 'welcome' },
     ],
   },

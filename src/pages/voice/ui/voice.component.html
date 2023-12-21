@@ -1,0 +1,25 @@
+<div class="voice-container">
+  <h1>Форма озвучки произвольного текста</h1>
+
+  <input
+    #input
+    [value]="text"
+    placeholder="Введите произвольный текст..."
+    size="100" />
+  <p>
+    <br />
+
+    <button
+      mat-flat-button
+      [disabled]="(valid$ | async) === false"
+      (click)="voice()">
+      Озвучить!
+    </button>
+  </p>
+
+  <audio
+    controls
+    autoplay
+    [src]="mp3Base64Data$ | async"
+    [hidden]="(mp3Base64Data$ | async)?.length === 0"></audio>
+</div>

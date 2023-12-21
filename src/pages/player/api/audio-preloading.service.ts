@@ -20,7 +20,7 @@ export class AudioPreloadingService {
     private openedBook: OpenedBookService,
     private audioStorage: AudioStorageService,
     private speechService: SpeechService,
-    private base65Helper: Base64HelperService
+    private base64Helper: Base64HelperService
   ) {}
 
   private fetchAudio(index: number): Observable<string> {
@@ -28,7 +28,7 @@ export class AudioPreloadingService {
       .getVoice(this.openedBook.book?.paragraphs[index] ?? '')
       .pipe(
         switchMap((blob: Blob) => {
-          return this.base65Helper.blobToBase64(blob);
+          return this.base64Helper.blobToBase64(blob);
         }),
         tap((base64audio: string) => {
           this.audioStorage.set(index, base64audio);

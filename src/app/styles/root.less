@@ -17,9 +17,22 @@ body {
   height: 100%;
 }
 
-html * {
-  box-sizing: border-box;
-  color: @defaultColor;
+html {
+  * {
+    box-sizing: border-box;
+    color: @defaultColor;
+    -webkit-text-stroke: 0.5px rgb(0 0 0 / 70%);
+    -webkit-text-fill-color: white;
+  }
+
+  b {
+    -webkit-text-stroke: 0;
+  }
+
+  a {
+    font-weight: bold;
+    -webkit-text-stroke: 0;
+  }
 }
 
 @font-face {

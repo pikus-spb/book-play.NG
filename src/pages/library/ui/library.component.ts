@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'welcome',
+  selector: 'library',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.less'],
+  templateUrl: './library.component.html',
+  styleUrls: ['./library.component.less'],
 })
-export class WelcomeComponent {}
+export class LibraryComponent {}
