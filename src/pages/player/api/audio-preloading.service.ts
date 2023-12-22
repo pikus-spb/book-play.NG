@@ -9,7 +9,7 @@ import { AudioStorageService } from '../model/audio-storage.service';
 
 export const PRELOAD_EXTRA = {
   min: 0,
-  default: 4,
+  default: 3,
 };
 
 @Injectable({
