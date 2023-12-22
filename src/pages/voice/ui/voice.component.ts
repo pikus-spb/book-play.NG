@@ -15,7 +15,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { MaterialModule } from 'src/shared/ui';
+import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
 import { Base64HelperService } from '../../../entities/base64';
 import { SpeechService } from '../../../entities/speech';
 
@@ -36,23 +36,27 @@ export class VoiceComponent implements AfterViewInit {
 
   constructor(
     private speechService: SpeechService,
-    private base64Helper: Base64HelperService
+    private base64Helper: Base64HelperService,
+    private eventsState: EventsStateService
   ) {}
 
   async voice() {
-    this.mp3Base64Data$.next(
-      await firstValueFrom(
-        this.speechService.getVoice(this.text).pipe(
-          switchMap((blob: Blob) => {
-            return this.base64Helper.blobToBase64(blob);
-          })
-        )
+    this.eventsState.add(Events.loading, true);
+
+    const data = await firstValueFrom(
+      this.speechService.getVoice(this.text).pipe(
+        switchMap((blob: Blob) => {
+          return this.base64Helper.blobToBase64(blob);
+        })
       )
     );
+    this.mp3Base64Data$.next(data);
+
+    this.eventsState.add(Events.loading, false);
   }
 
   ngAfterViewInit() {
-    fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup')
+    fromEvent<KeyboardEvent>(this.input.nativeElement, 'input')
       .pipe(
         map(event => (event.target as HTMLInputElement).value),
         distinctUntilChanged(),

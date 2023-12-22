@@ -65,7 +65,10 @@ export class AutoPlayService implements OnDestroy {
         tap((book: BookData | null) => {
           if (book) {
             this.showActiveParagraph(this.position);
-            this.preloadHelper.preloadParagraph(this.position);
+            this.preloadHelper.preloadParagraph(
+              this.position,
+              PRELOAD_EXTRA.min
+            );
           }
         })
       )
@@ -125,10 +128,14 @@ export class AutoPlayService implements OnDestroy {
 
   private async ensureAudioDataReady() {
     if (!this.audioStorage.get(this.position)) {
+      this.eventStateService.add(Events.loading, true);
+
       await this.preloadHelper.preloadParagraph(
         this.position,
         PRELOAD_EXTRA.min
       );
+
+      this.eventStateService.add(Events.loading, false);
     }
   }
 
@@ -186,6 +193,7 @@ export class AutoPlayService implements OnDestroy {
       this.audioPlayer.stop();
       this.position = index;
       this._paused$.next(false);
+      this.eventStateService.add(Events.loading, false);
 
       do {
         const isScrollingNow = await firstValueFrom(
