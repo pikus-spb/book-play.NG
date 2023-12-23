@@ -7,11 +7,14 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Observable, tap } from 'rxjs';
+
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
 import { BookData } from 'src/entities/fb2';
 import { MaterialModule } from 'src/shared/ui';
+
 import { AutoPlayService } from '../api/auto-play.service';
+import { DomHelperService } from '../api/dom-helper.service';
 
 @Component({
   selector: 'player',
@@ -27,7 +30,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
   constructor(
     private openedBookService: OpenedBookService,
     private autoPlay: AutoPlayService,
-    private router: Router
+    private router: Router,
+    private domHelper: DomHelperService
   ) {
     this.router.events
       .pipe(
@@ -38,7 +42,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
           );
         }),
         tap(() => {
-          this.autoPlay.showActiveParagraph();
+          this.domHelper.showActiveParagraph();
         })
       )
       .subscribe();
