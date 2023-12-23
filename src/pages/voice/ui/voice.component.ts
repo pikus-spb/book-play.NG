@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import {
   BehaviorSubject,
@@ -15,9 +16,9 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+import { Base64HelperService } from 'src/entities/base64';
+import { SpeechService } from 'src/entities/speech';
 import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
-import { Base64HelperService } from '../../../entities/base64';
-import { SpeechService } from '../../../entities/speech';
 
 @Component({
   selector: 'voice',
@@ -26,11 +27,12 @@ import { SpeechService } from '../../../entities/speech';
   templateUrl: './voice.component.html',
   styleUrls: ['./voice.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class VoiceComponent implements AfterViewInit {
+  @ViewChild('container') container!: ElementRef;
   @ViewChild('input') input!: ElementRef;
 
-  public mp3Base64Data$: Subject<string> = new BehaviorSubject('');
   public text = '';
   public valid$: Subject<boolean> = new BehaviorSubject(false);
 
@@ -39,6 +41,20 @@ export class VoiceComponent implements AfterViewInit {
     private base64Helper: Base64HelperService,
     private eventsState: EventsStateService
   ) {}
+
+  private addAudioElement(base64Data: string, text: string): void {
+    const audio = document.createElement('audio');
+    audio.setAttribute('controls', 'true');
+    audio.setAttribute('autoplay', 'true');
+    audio.setAttribute('class', 'preview');
+    audio.src = base64Data;
+
+    const textNode = document.createElement('span');
+    textNode.innerText = text;
+
+    this.container.nativeElement.appendChild(textNode);
+    this.container.nativeElement.appendChild(audio);
+  }
 
   async voice() {
     this.eventsState.add(Events.loading, true);
@@ -50,7 +66,7 @@ export class VoiceComponent implements AfterViewInit {
         })
       )
     );
-    this.mp3Base64Data$.next(data);
+    this.addAudioElement(data, this.text);
 
     this.eventsState.add(Events.loading, false);
   }

@@ -1,11 +1,10 @@
-<div class="voice-container">
+<div #container class="voice-container">
   <h1>Форма озвучки произвольного текста</h1>
 
-  <input
+  <textarea
     #input
     [value]="text"
-    placeholder="Введите произвольный текст..."
-    size="100" />
+    placeholder="Введите произвольный текст..."></textarea>
   <p>
     <br />
 
@@ -16,10 +15,4 @@
       Озвучить!
     </button>
   </p>
-
-  <audio
-    controls
-    autoplay
-    [src]="mp3Base64Data$ | async"
-    [hidden]="(mp3Base64Data$ | async)?.length === 0"></audio>
 </div>
