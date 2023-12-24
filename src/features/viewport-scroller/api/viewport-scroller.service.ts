@@ -3,11 +3,13 @@ import { ElementRef } from '@angular/core';
 import {
   delay,
   first,
+  firstValueFrom,
   Observable,
   shareReplay,
   Subject,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 
 export let viewportScroller: null | ViewportScrollerService = null;
@@ -68,9 +70,11 @@ class ViewportScrollerService {
   }
 
   public scrollToIndex(index: number) {
-    this.viewport?.scrollToOffset(0);
+    (async () => {
+      this.viewport?.scrollToOffset(0);
 
-    setTimeout(() => {
+      await firstValueFrom(timer(100));
+
       this.viewport?.scrollable
         .elementScrolled()
         .pipe(
@@ -80,8 +84,9 @@ class ViewportScrollerService {
         )
         .subscribe();
 
+      await firstValueFrom(timer(100));
       this._scrollToIndex(index);
-    });
+    })();
 
     return this.scrollComplete$.pipe(shareReplay(1));
   }
