@@ -69,7 +69,7 @@ class ViewportScrollerService {
     }
   }
 
-  public scrollToIndex(index: number) {
+  public scrollToIndex(index: number): Observable<void> {
     (async () => {
       this.viewport?.scrollToOffset(0);
 
