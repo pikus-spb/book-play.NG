@@ -1,54 +1,42 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { fromEvent, Observable, Subject, takeUntil, tap } from 'rxjs';
-import { OpenedBookService } from 'src/features/opened-book';
+import {
+  debounceTime,
+  fromEvent,
+  Observable,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 import { viewportScroller } from 'src/features/viewport-scroller';
 import { CursorPositionStoreService } from 'src/entities/cursor';
-import { BookData } from 'src/entities/fb2';
 
-import {
-  AudioPreloadingService,
-  PRELOAD_EXTRA,
-} from './audio-preloading.service';
+import { AudioPreloadingService } from './audio-preloading.service';
 import { DomHelperService } from './dom-helper.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventsHelperService implements OnDestroy {
-  public scrolled$?: Observable<Event>;
   private destroyed$: Subject<void> = new Subject();
+
+  public scrolled$?: Observable<Event>;
 
   constructor(
     private cursorService: CursorPositionStoreService,
     private domHelper: DomHelperService,
-    private preloadHelper: AudioPreloadingService,
-    private openedBook: OpenedBookService
+    private preloadHelper: AudioPreloadingService
   ) {}
 
   public attachEvents() {
     this.cursorService.position$
       .pipe(
         takeUntilDestroyed(),
-        tap(() => {
+        debounceTime(100),
+        tap(async () => {
           this.domHelper.showActiveParagraph();
           this.preloadHelper.preloadParagraph(this.cursorService.position);
-        })
-      )
-      .subscribe();
-
-    this.openedBook.book$
-      .pipe(
-        takeUntilDestroyed(),
-        tap((book: BookData | null) => {
-          if (book) {
-            this.domHelper.showActiveParagraph();
-            this.preloadHelper.preloadParagraph(
-              this.cursorService.position,
-              PRELOAD_EXTRA.min
-            );
-          }
         })
       )
       .subscribe();

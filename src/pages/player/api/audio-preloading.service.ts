@@ -9,6 +9,7 @@ import { AudioStorageService } from '../model/audio-storage.service';
 
 export const PRELOAD_EXTRA = {
   min: 0,
+  forInitialization: 1,
   default: 3,
 };
 
@@ -16,6 +17,11 @@ export const PRELOAD_EXTRA = {
   providedIn: 'root',
 })
 export class AudioPreloadingService {
+  private _initialized = false;
+
+  public get initialized(): boolean {
+    return this._initialized;
+  }
   constructor(
     private openedBook: OpenedBookService,
     private audioStorage: AudioStorageService,
@@ -51,6 +57,9 @@ export class AudioPreloadingService {
         const savedAudio = this.audioStorage.get(i);
         if (!savedAudio) {
           await firstValueFrom(this.fetchAudio(i));
+          if (i - startIndex >= PRELOAD_EXTRA.forInitialization) {
+            this._initialized = true;
+          }
         }
       }
     }
