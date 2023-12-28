@@ -11,6 +11,7 @@ import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
 import { OpenedBookService } from 'src/features/opened-book';
 import { CopyrightComponent } from 'src/entities/copyright';
+import { CopyrightOwnerComponent } from 'src/entities/copyright-owner';
 import { MaterialModule } from 'src/shared/ui';
 import { EventsStateService, Events } from 'src/shared/ui';
 
@@ -25,6 +26,7 @@ import { EventsStateService, Events } from 'src/shared/ui';
     MainMenuComponent,
     RouterModule,
     CopyrightComponent,
+    CopyrightOwnerComponent,
   ],
   standalone: true,
 })

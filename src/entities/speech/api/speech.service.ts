@@ -4,7 +4,7 @@ import { Observable, ReplaySubject, Subscription } from 'rxjs';
 
 import { HttpUtilsService } from 'src/shared/lib';
 
-const AUDIO_API_URL = 'https://pikus-dev.space/tts-api/tts.php';
+const AUDIO_API_URL = 'https://book-play.ru/tts-api/tts.php';
 const AUDIO_HEADERS = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded',
 });
