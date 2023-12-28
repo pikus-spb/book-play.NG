@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { firstValueFrom, fromEvent, merge, Subject } from 'rxjs';
+import { EqualizerService } from 'src/shared/api/audio-player/equalizer.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,13 +19,14 @@ export class AudioPlayerService implements OnDestroy {
     return this._stopped;
   }
 
-  constructor() {
-    this.createAudioElement();
+  constructor(equalizer: EqualizerService) {
+    this.createAudioElement(equalizer);
   }
 
-  private createAudioElement(): void {
+  private createAudioElement(equalizer: EqualizerService): void {
     this.audio = document.createElement('audio');
     this.audio.setAttribute('hidden', 'true');
+    equalizer.equalize(this.audio);
     document.body.appendChild(this.audio);
   }
 
