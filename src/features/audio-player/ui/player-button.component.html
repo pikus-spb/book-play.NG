@@ -3,6 +3,6 @@
   matTooltip="Играть/Пауза"
   matTooltipPosition="below"
   matTooltipShowDelay="1500"
-  (click)="autoPlay.toggle()">
+  (click)="click()">
   <mat-icon>{{ (autoPlay.paused$ | async) ? 'play_arrow' : 'pause' }}</mat-icon>
 </button>

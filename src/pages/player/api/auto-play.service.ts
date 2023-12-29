@@ -1,4 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   BehaviorSubject,
   filter,
@@ -32,6 +33,7 @@ export class AutoPlayService implements OnDestroy {
   public paused$: Observable<boolean> = this._paused$.pipe(shareReplay(1));
 
   constructor(
+    private router: Router,
     private openedBook: OpenedBookService,
     private audioPlayer: AudioPlayerService,
     private speechService: SpeechService,
@@ -58,6 +60,9 @@ export class AutoPlayService implements OnDestroy {
 
   public toggle(): void {
     if (this.audioPlayer.paused) {
+      if (this.router.url !== '/player') {
+        this.router.navigateByUrl('/player');
+      }
       if (this.audioPlayer.stopped) {
         this.start();
       } else {
