@@ -12,7 +12,7 @@ if (!window['AudioContext']) {
 const AUDIO_PRESET = [
   {
     frequency: 20,
-    gain: 30,
+    gain: 20,
   },
   {
     frequency: 40,
@@ -31,8 +31,8 @@ const AUDIO_PRESET = [
     gain: -20,
   },
   {
-    frequency: 150000,
-    gain: -15,
+    frequency: 17000,
+    gain: -10,
   },
 ];
 
