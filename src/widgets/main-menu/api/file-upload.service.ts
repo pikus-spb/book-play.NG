@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { first, tap } from 'rxjs';
 import { OpenedBookService } from 'src/features/opened-book';
 import { BookData, Fb2ReaderService } from 'src/entities/fb2';
@@ -9,7 +10,8 @@ import { BookData, Fb2ReaderService } from 'src/entities/fb2';
 export class FileUploadService {
   constructor(
     private fb2Service: Fb2ReaderService,
-    private newBook: OpenedBookService
+    private newBook: OpenedBookService,
+    private router: Router
   ) {}
 
   public parseNewFile(files?: FileList): void {
@@ -18,7 +20,10 @@ export class FileUploadService {
         .readBook(files[0])
         .pipe(
           first(),
-          tap((bookData: BookData) => this.newBook.update(bookData))
+          tap((bookData: BookData) => {
+            this.newBook.update(bookData);
+            this.router.navigateByUrl('/player');
+          })
         )
         .subscribe();
     } else {

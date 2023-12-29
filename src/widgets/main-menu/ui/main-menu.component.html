@@ -3,7 +3,11 @@
     <mat-icon>home</mat-icon>
     Главная
   </a>
-  <a mat-list-item (uploadFile)="fileUploaded($event)" [accept]="'.fb2'"
+  <a
+    #uploadButton
+    mat-list-item
+    (uploadFile)="fileUploaded($event)"
+    [accept]="'.fb2'"
     ><mat-icon>upload</mat-icon>Загрузить
   </a>
   <a

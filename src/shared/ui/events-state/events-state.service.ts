@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export enum Events {
   loading = 'loading',
   scrollingIntoView = 'scrollingIntoView',
+  runUploadFile = 'runUploadFile',
 }
 
 @Injectable({

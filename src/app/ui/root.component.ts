@@ -1,15 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { NewBookNavigatorService } from 'src/processes/new-book';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'root',
   template: `<router-outlet></router-outlet>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RootComponent implements OnInit {
-  constructor(private newBook: NewBookNavigatorService) {}
-
-  ngOnInit() {
-    this.newBook.handle();
-  }
-}
+export class RootComponent {}

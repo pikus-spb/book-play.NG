@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { Events, EventsStateService } from 'src/shared/ui';
 
 @Component({
   selector: 'welcome',
@@ -8,4 +9,10 @@ import { Component } from '@angular/core';
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.less'],
 })
-export class WelcomeComponent {}
+export class WelcomeComponent {
+  constructor(private eventStates: EventsStateService) {}
+
+  public runFileUpload(): void {
+    this.eventStates.add(Events.runUploadFile, true);
+  }
+}
