@@ -19,14 +19,13 @@ export class AudioPlayerService implements OnDestroy {
     return this._stopped;
   }
 
-  constructor(equalizer: EqualizerService) {
-    this.createAudioElement(equalizer);
+  constructor(private equalizer: EqualizerService) {
+    this.createAudioElement();
   }
 
-  private createAudioElement(equalizer: EqualizerService): void {
+  private createAudioElement(): void {
     this.audio = document.createElement('audio');
     this.audio.setAttribute('hidden', 'true');
-    equalizer.equalize(this.audio);
     document.body.appendChild(this.audio);
   }
 
@@ -40,6 +39,11 @@ export class AudioPlayerService implements OnDestroy {
 
   public async play(): Promise<boolean | Event> {
     const reallyEnded$ = fromEvent(this.audio, 'ended');
+
+    if (!this.equalizer.applied) {
+      this.equalizer.equalize(this.audio);
+    }
+
     await this.audio.play();
     this._stopped = false;
     return await firstValueFrom(merge(this._ended$, reallyEnded$));

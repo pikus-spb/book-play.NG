@@ -40,7 +40,12 @@ const AUDIO_PRESET = [
   providedIn: 'root',
 })
 export class EqualizerService {
-  private context = new AudioContext();
+  private context!: AudioContext;
+  private _applied = false;
+
+  public get applied(): boolean {
+    return this._applied;
+  }
 
   private createFilter(frequency: number, gain: number): AudioNode {
     const filter = this.context.createBiquadFilter();
@@ -67,10 +72,14 @@ export class EqualizerService {
   }
 
   public equalize(audio: HTMLAudioElement) {
-    const source = this.context.createMediaElementSource(audio);
-    const filters = this.createFilters();
+    if (!this._applied) {
+      this._applied = true;
+      this.context = new AudioContext();
+      const source = this.context.createMediaElementSource(audio);
+      const filters = this.createFilters();
 
-    source.connect(filters[0] as AudioNode);
-    filters[filters.length - 1].connect(this.context.destination);
+      source.connect(filters[0] as AudioNode);
+      filters[filters.length - 1].connect(this.context.destination);
+    }
   }
 }
