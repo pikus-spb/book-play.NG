@@ -66,12 +66,6 @@ export class AutoPlayService implements OnDestroy {
       )
       .subscribe();
 
-    this.openedBook.book$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(newBook => {
-        this.stop();
-      });
-
     fromEvent(window, 'resize')
       .pipe(
         takeUntilDestroyed(),

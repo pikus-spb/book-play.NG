@@ -6,7 +6,15 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, firstValueFrom, Observable, tap, timer } from 'rxjs';
+import {
+  filter,
+  first,
+  firstValueFrom,
+  Observable,
+  Subject,
+  tap,
+  timer,
+} from 'rxjs';
 
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
@@ -26,6 +34,7 @@ import { DomHelperService } from '../api/dom-helper.service';
   standalone: true,
 })
 export class PlayerComponent implements OnInit, OnDestroy {
+  private _destroyed$: Subject<void> = new Subject<void>();
   public book$?: Observable<BookData | null>;
 
   constructor(
@@ -59,11 +68,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
   private async loadBookFromLibrary() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
+      this.autoPlay.stop();
       this.eventStates.add(Events.loading, true);
-
       this.openedBookService.update(null);
 
-      const observable = this.booksApi.getById(id);
+      const observable = this.booksApi.getById(id).pipe(first());
       observable.subscribe(book => {
         const bookData = this.fb2Reader.readBookFromString(book.content);
         this.openedBookService.update(bookData);
@@ -88,6 +97,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this._destroyed$.next();
     this.autoPlay.ngOnDestroy();
   }
 }
