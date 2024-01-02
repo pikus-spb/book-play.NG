@@ -1,14 +1,20 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
+  debounceTime,
   filter,
   firstValueFrom,
+  fromEvent,
   Observable,
   shareReplay,
   Subject,
+  takeUntil,
+  tap,
 } from 'rxjs';
 
+import { DomHelperService } from 'src/pages/player/api/dom-helper.service';
 import { OpenedBookService } from 'src/features/opened-book';
 import { CursorPositionStoreService } from 'src/entities/cursor';
 import { SpeechService } from 'src/entities/speech';
@@ -18,7 +24,6 @@ import { Events, EventsStateService } from 'src/shared/ui';
 import { AudioStorageService } from '../model/audio-storage.service';
 import { AudioPreloadingService } from './audio-preloading.service';
 import { DataHelperService } from './data-helper.service';
-import { EventsHelperService } from './events-helper.service';
 import { ScrollPositionHelperService } from './scroll-position-helper.service';
 
 @Injectable({
@@ -37,15 +42,46 @@ export class AutoPlayService implements OnDestroy {
     private openedBook: OpenedBookService,
     private audioPlayer: AudioPlayerService,
     private speechService: SpeechService,
-    private cursorService: CursorPositionStoreService,
     private audioStorage: AudioStorageService,
     private eventStateService: EventsStateService,
-    private eventsHelper: EventsHelperService,
     private dataHelper: DataHelperService,
     private preloadingService: AudioPreloadingService,
-    private scrollPositionHelper: ScrollPositionHelperService
+    private scrollPositionHelper: ScrollPositionHelperService,
+    private cursorService: CursorPositionStoreService,
+    private domHelper: DomHelperService,
+    private preloadHelper: AudioPreloadingService
   ) {
-    this.eventsHelper.attachEvents();
+    this.attachEvents();
+  }
+
+  public attachEvents() {
+    this.cursorService.position$
+      .pipe(
+        takeUntilDestroyed(),
+        debounceTime(100),
+        tap(async () => {
+          this.domHelper.showActiveParagraph();
+          this.preloadHelper.preloadParagraph(this.cursorService.position);
+        })
+      )
+      .subscribe();
+
+    this.openedBook.book$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(newBook => {
+        if (newBook) {
+          this.stop();
+        }
+      });
+
+    fromEvent(window, 'resize')
+      .pipe(
+        takeUntilDestroyed(),
+        tap(() => {
+          this.domHelper.showActiveParagraph();
+        })
+      )
+      .subscribe();
   }
 
   private resume(): void {
@@ -55,6 +91,11 @@ export class AutoPlayService implements OnDestroy {
 
   private pause(): void {
     this.audioPlayer.pause();
+    this._paused$.next(true);
+  }
+
+  public stop(): void {
+    this.audioPlayer.stop();
     this._paused$.next(true);
   }
 

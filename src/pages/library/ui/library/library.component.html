@@ -1,0 +1,11 @@
+<div class="library-container">
+  <h1>Библиотека</h1>
+
+  <a
+    class="book"
+    [routerLink]="'/player/' + book.id"
+    *ngFor="let book of this.getAllBooks() | async"
+    >{{ book.authorFirstName[0] }}. {{ book.authorLastName }} -
+    {{ book.title }}</a
+  >
+</div>

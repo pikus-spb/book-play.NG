@@ -17,6 +17,14 @@ const routes: Route[] = [
         },
       },
       {
+        path: 'player/:id',
+        loadComponent() {
+          return import('src/pages/player').then(
+            imported => imported.PlayerComponent
+          );
+        },
+      },
+      {
         path: 'player',
         loadComponent() {
           return import('src/pages/player').then(

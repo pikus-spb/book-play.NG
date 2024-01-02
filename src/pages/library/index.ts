@@ -1,1 +1,1 @@
-export { LibraryComponent } from './ui/library.component';
+export { LibraryComponent } from './ui/library/library.component';

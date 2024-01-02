@@ -1,25 +1,45 @@
-import { inject, Injectable, Injector } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import {
+  firstValueFrom,
+  Observable,
+  Subject,
+  takeUntil,
+  tap,
+  timer,
+} from 'rxjs';
 import { PARAGRAPH_CLASS_PREFIX } from 'src/features/book-paragraph';
 import { viewportScroller } from 'src/features/viewport-scroller';
 import { CursorPositionStoreService } from 'src/entities/cursor';
 
-import { EventsHelperService } from './events-helper.service';
 import { ScrollPositionHelperService } from './scroll-position-helper.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DomHelperService {
-  private get eventsHelper(): EventsHelperService {
-    return this.injector.get(EventsHelperService);
-  }
+export class DomHelperService implements OnDestroy {
+  public scrolled$?: Observable<Event>;
+  private destroyed$: Subject<void> = new Subject();
 
   constructor(
     private cursorService: CursorPositionStoreService,
-    private scrollPositionHelper: ScrollPositionHelperService,
-    private injector: Injector
+    private scrollPositionHelper: ScrollPositionHelperService
   ) {}
+
+  private attachScrollingEvent() {
+    if (viewportScroller && !this.scrolled$) {
+      this.scrolled$ = viewportScroller.scrolled$;
+
+      this.scrolled$
+        ?.pipe(
+          takeUntil(this.destroyed$),
+          tap(() => {
+            const node = this.getParagraphNode(this.cursorService.position);
+            this.updateActiveCSSClass(node);
+          })
+        )
+        .subscribe();
+    }
+  }
 
   public updateActiveCSSClass(element: HTMLElement | null): void {
     document.body.querySelector('p.active')?.classList.remove('active');
@@ -47,7 +67,11 @@ export class DomHelperService {
     }
 
     if (viewportScroller) {
-      this.eventsHelper.attachScrollingEvent(); // TODO: find a better place
+      this.attachScrollingEvent(); // TODO: find a better place
     }
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
   }
 }

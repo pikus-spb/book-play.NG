@@ -20,7 +20,8 @@ import { BookParagraphComponent } from 'src/features/book-paragraph';
 import { createViewportScrollerService } from 'src/features/viewport-scroller';
 import { BookData } from 'src/entities/fb2';
 import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
-import { CanvasSkeletonComponent } from './canvas-skeleton.component';
+
+import { CanvasSkeletonComponent } from '../canvas-skeleton/canvas-skeleton.component';
 
 const PARAGRAPH_TAG = 'book-paragraph';
 

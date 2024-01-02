@@ -1,1 +1,1 @@
-export { BookCanvasComponent } from './ui/book-canvas.component';
+export { BookCanvasComponent } from 'src/widgets/book-canvas/ui/book-canvas/book-canvas.component';
