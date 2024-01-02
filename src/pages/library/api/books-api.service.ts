@@ -4,7 +4,9 @@ import { Observable, retry, shareReplay } from 'rxjs';
 
 import { BookDescription, Book } from '../model/books-model';
 
-const API_URL = 'http://book-play.ru:8081';
+const protocol = document.location.protocol;
+const port = protocol === 'https:' ? 8443 : 8080;
+const API_URL = protocol + '//book-play.ru:' + port;
 const RETRY_NUMBER = 3;
 
 enum RequestSuffix {
