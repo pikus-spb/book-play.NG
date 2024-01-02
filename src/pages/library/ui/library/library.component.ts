@@ -3,8 +3,9 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { map, Observable } from 'rxjs';
 
-import { BooksApiService } from 'src/pages/library/api/books-api.service';
-import { BookDescription } from 'src/pages/library/model/books-model';
+import { BooksApiService } from 'src/entities/books/';
+
+import { BookDescription } from '../../model/books-model';
 
 @Component({
   selector: 'library',

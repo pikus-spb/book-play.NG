@@ -6,14 +6,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, firstValueFrom, Observable, tap } from 'rxjs';
-import { BooksApiService } from 'src/pages/library/api/books-api.service';
+import { filter, firstValueFrom, Observable, tap, timer } from 'rxjs';
 
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
-import { BookData } from 'src/entities/fb2';
-import { TextParserService } from 'src/entities/fb2/api/text-parser.service';
-import { MaterialModule } from 'src/shared/ui';
+import { BooksApiService } from 'src/entities/books/';
+import { BookData, Fb2ReaderService } from 'src/entities/fb2';
+import { EventsStateService, Events, MaterialModule } from 'src/shared/ui';
 
 import { AutoPlayService } from '../api/auto-play.service';
 import { DomHelperService } from '../api/dom-helper.service';
@@ -36,7 +35,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private domHelper: DomHelperService,
     private booksApi: BooksApiService,
-    private fb2Parser: TextParserService
+    private fb2Reader: Fb2ReaderService,
+    private eventStates: EventsStateService
   ) {
     this.router.events
       .pipe(
@@ -48,9 +48,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
           );
         }),
         tap(async () => {
-          this.openedBookService.update(null);
-          await this.loadBookFromLibraryIfAny();
-          this.domHelper.showActiveParagraph();
+          this.loadBookFromLibrary();
         })
       )
       .subscribe();
@@ -58,15 +56,25 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.book$ = this.openedBookService.book$;
   }
 
-  private async loadBookFromLibraryIfAny() {
+  private async loadBookFromLibrary() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
+      this.eventStates.add(Events.loading, true);
+
+      this.openedBookService.update(null);
+
       const observable = this.booksApi.getById(id);
       observable.subscribe(book => {
-        const bookData = this.fb2Parser.parse(book.content);
+        const bookData = this.fb2Reader.readBookFromString(book.content);
         this.openedBookService.update(bookData);
       });
+
       await firstValueFrom(observable);
+      await firstValueFrom(timer(1));
+
+      this.domHelper.showActiveParagraph();
+
+      this.eventStates.add(Events.loading, false);
     }
   }
 
@@ -76,9 +84,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.book$ = this.openedBookService.book$;
-    this.openedBookService.update(null);
-    await this.loadBookFromLibraryIfAny();
-    this.domHelper.showActiveParagraph();
+    await this.loadBookFromLibrary();
   }
 
   ngOnDestroy() {

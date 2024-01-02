@@ -17,7 +17,7 @@ export class FileUploadService {
   public parseNewFile(files?: FileList): void {
     if (files && files.length > 0) {
       this.fb2Service
-        .readBook(files[0])
+        .readBookFromFile(files[0])
         .pipe(
           first(),
           tap((bookData: BookData) => {

@@ -14,12 +14,16 @@ export class Fb2ReaderService {
     private fileHelper: FileReaderService
   ) {}
 
-  public readBook(file: Blob): Observable<BookData> {
+  public readBookFromFile(file: Blob): Observable<BookData> {
     return this.fileHelper.readFile(file).pipe(
       first(),
       map((text: string) => {
-        return this.fb2Parser.parse(text);
+        return this.readBookFromString(text);
       })
     );
+  }
+
+  public readBookFromString(text: string): BookData {
+    return this.fb2Parser.parse(text);
   }
 }
