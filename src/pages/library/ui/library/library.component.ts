@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 import { BooksApiService } from 'src/entities/books/';
+import { Events, EventsStateService } from 'src/shared/ui';
 
 import { BookDescription } from '../../model/books-model';
 
@@ -15,9 +16,13 @@ import { BookDescription } from '../../model/books-model';
   styleUrls: ['./library.component.less'],
 })
 export class LibraryComponent {
-  constructor(public api: BooksApiService) {}
+  constructor(
+    public api: BooksApiService,
+    private eventStates: EventsStateService
+  ) {}
 
   public getAllBooks(): Observable<BookDescription[]> {
+    this.eventStates.add(Events.loading, true);
     return this.api.getAll().pipe(
       map((books: BookDescription[]) => {
         return books
@@ -27,6 +32,9 @@ export class LibraryComponent {
           .sort((a, b) => {
             return a.authorLastName.localeCompare(b.authorLastName);
           });
+      }),
+      tap(() => {
+        this.eventStates.add(Events.loading, false);
       })
     );
   }
