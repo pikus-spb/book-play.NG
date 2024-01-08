@@ -40,12 +40,16 @@ class ViewportScrollerService {
     }
   }
 
-  private scrollToLastVisibleElement() {
+  private async scrollToLastVisibleElement() {
     const paragraph = this.el?.nativeElement.querySelector(
       `${this.defaultElementTag}:last-of-type`
     );
     if (paragraph) {
       paragraph.scrollIntoView();
+    } else {
+      // Никакой параграф сейчас не отображается - подождем и выполним еще раз
+      await firstValueFrom(timer(300));
+      this.scrollToLastVisibleElement();
     }
   }
   private scrollToFoundElement(index: number) {
