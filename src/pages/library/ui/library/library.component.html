@@ -1,11 +1,19 @@
 <div class="library-container">
-  <h1>Библиотека</h1>
+  <h1 class="main">
+    Библиотека
+    <h3>(авторы, книги)</h3>
+  </h1>
 
-  <a
-    class="book"
-    [routerLink]="'/player/' + book.id"
-    *ngFor="let book of this.getAllBooks() | async"
-    >{{ book.authorFirstName[0] }}. {{ book.authorLastName }} -
-    {{ book.title }}</a
-  >
+  <div *ngIf="this.getAllBookLetters() | async as data">
+    <section *ngFor="let section of data | keyvalue">
+      <h1 class="letter">{{ section.key }}</h1>
+      <a
+        *ngFor="let book of section.value"
+        class="book"
+        [routerLink]="'/player/' + book.id"
+        >{{ book.authorFirstName[0] }}. {{ book.authorLastName }} -
+        {{ book.title }}</a
+      >
+    </section>
+  </div>
 </div>
