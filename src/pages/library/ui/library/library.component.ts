@@ -25,13 +25,9 @@ export class LibraryComponent {
     this.eventStates.add(Events.loading, true);
     return this.api.getAll().pipe(
       map((books: BookDescription[]) => {
-        return books
-          .filter(
-            book => book.authorFirstName && book.authorLastName && book.title
-          )
-          .sort((a, b) => {
-            return a.authorLastName.localeCompare(b.authorLastName);
-          });
+        return books.sort((a, b) => {
+          return a.authorLastName.localeCompare(b.authorLastName);
+        });
       }),
       tap(() => {
         this.eventStates.add(Events.loading, false);

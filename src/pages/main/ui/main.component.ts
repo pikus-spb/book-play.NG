@@ -7,13 +7,12 @@ import {
   RouterModule,
 } from '@angular/router';
 import { filter, Observable, tap } from 'rxjs';
+
 import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
-import { OpenedBookService } from 'src/features/opened-book';
 import { CopyrightComponent } from 'src/entities/copyright';
 import { CopyrightOwnerComponent } from 'src/entities/copyright-owner';
-import { MaterialModule } from 'src/shared/ui';
-import { EventsStateService, Events } from 'src/shared/ui';
+import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
 
 @Component({
   selector: 'main',
@@ -35,8 +34,7 @@ export class MainComponent {
 
   constructor(
     private router: Router,
-    public eventStatesService: EventsStateService,
-    public openedBook: OpenedBookService
+    public eventStatesService: EventsStateService
   ) {
     this._subscribeToRouteChange();
     this.loading$ = eventStatesService.get$(Events.loading);
