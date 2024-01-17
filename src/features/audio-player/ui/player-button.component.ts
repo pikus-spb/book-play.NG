@@ -17,8 +17,8 @@ import { MaterialModule } from 'src/shared/ui';
 export class PlayerButtonComponent {
   constructor(public autoPlay: AutoPlayService) {}
 
-  @HostListener('document:keyup.Space')
-  public click() {
+  @HostListener('document:keyup.Space', ['$event'])
+  public click(event: Event) {
     const activeNode = document.activeElement as HTMLElement;
     if (activeNode) {
       if (!['input', 'textarea'].includes(activeNode.nodeName.toLowerCase())) {
@@ -28,5 +28,8 @@ export class PlayerButtonComponent {
     } else {
       this.autoPlay.toggle();
     }
+
+    event.preventDefault();
+    event.stopPropagation();
   }
 }

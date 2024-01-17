@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { map, Observable, reduce, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 import { BooksApiService } from 'src/entities/books/';
 import { Events, EventsStateService } from 'src/shared/ui';
