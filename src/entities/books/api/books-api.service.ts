@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, retry, shareReplay } from 'rxjs';
 
-import { BookDescription, Book } from '../model/';
+import { BookDescription, Book } from '../model/books-model';
 
 const protocol = document.location.protocol;
 const port = protocol === 'https:' ? 8443 : 8080;
