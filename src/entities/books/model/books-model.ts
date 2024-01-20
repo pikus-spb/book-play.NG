@@ -4,6 +4,7 @@ export interface BookDescription {
   authorLastName: string;
   title: string;
   bookFullName: string;
+  logo?: string;
 }
 
 export interface Book {

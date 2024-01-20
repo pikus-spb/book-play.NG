@@ -17,16 +17,14 @@ import { MaterialModule } from 'src/shared/ui';
 export class PlayerButtonComponent {
   constructor(public autoPlay: AutoPlayService) {}
 
-  @HostListener('document:keyup.Space')
-  public click() {
-    const activeNode = document.activeElement as HTMLElement;
-    if (activeNode) {
-      if (!['input', 'textarea'].includes(activeNode.nodeName.toLowerCase())) {
-        activeNode.blur(); // исключаем лишние клики
+  @HostListener('document:keydown.Space', ['$event'])
+  public click(event: Event) {
+    const node = event.target as HTMLElement;
+    if (node) {
+      if (!['input', 'textarea'].includes(node.nodeName.toLowerCase())) {
+        event.preventDefault();
         this.autoPlay.toggle();
       }
-    } else {
-      this.autoPlay.toggle();
     }
   }
 }

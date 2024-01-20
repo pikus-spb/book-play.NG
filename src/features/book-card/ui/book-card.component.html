@@ -1,0 +1,24 @@
+<mat-card class="book-card" [attr.title]="book.bookFullName">
+  <mat-card-header>
+    <div class="label">{{ book.title }}</div>
+  </mat-card-header>
+  <mat-card-content>
+    <a [routerLink]="'/player/' + book.id"
+      ><img
+        mat-card-image
+        [src]="getBookLogo(book)"
+        class="image"
+        alt="Лицевая страница книги"
+        [attr.title]="'Слушать бесплатно ' + book.bookFullName" />
+    </a>
+  </mat-card-content>
+  <mat-card-actions>
+    <a
+      class="book"
+      mat-raised-button
+      color="primary"
+      [routerLink]="'/player/' + book.id"
+      >Слушать</a
+    >
+  </mat-card-actions>
+</mat-card>

@@ -2,6 +2,15 @@
 @headerHeight: 3.5rem;
 @defaultPadding: 1rem;
 @defaultBorderWidth: 1px;
+@cardFooterHeight: 60px;
+@cardImageHeight: 300px;
+@cardImageWidth: 200px;
+@cardWidth: calc(@cardImageWidth + 2 * @defaultPadding);
+@cardHeight: calc(
+  @cardImageHeight + @cardHeaderHeight + @cardFooterHeight + 2 * @defaultPadding
+);
+@cardHeaderHeight: 30px;
+@cardHeaderWidth: calc(@cardWidth - 2 * @defaultPadding);
 @defaultColor: rgb(250 250 250 / 90%);
 @defaultHighlightColor: rgb(200 200 200 / 25%);
 @defaultBorder: @defaultBorderWidth solid @defaultHighlightColor;

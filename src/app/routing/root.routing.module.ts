@@ -41,6 +41,14 @@ const routes: Route[] = [
         },
       },
       {
+        path: 'library/:letter',
+        loadComponent() {
+          return import('src/pages/library').then(
+            imported => imported.LibraryComponent
+          );
+        },
+      },
+      {
         path: 'library',
         loadComponent() {
           return import('src/pages/library').then(

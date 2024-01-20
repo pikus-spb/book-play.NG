@@ -1,0 +1,39 @@
+@import 'src/app/styles/root';
+
+mat-card.book-card {
+  display: inline-block;
+  margin: 0 @defaultPadding;
+  padding: @defaultPadding;
+  width: @cardWidth;
+  height: @cardHeight;
+
+  mat-card-header {
+    padding: 0;
+    width: @cardHeaderWidth;
+    height: @cardHeaderHeight;
+
+    .label {
+      width: @cardHeaderWidth;
+      height: @cardHeaderHeight;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  mat-card-content {
+    padding: 0;
+    .image {
+      width: @cardImageWidth;
+      height: @cardImageHeight;
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: @cardFooterHeight;
+  }
+}

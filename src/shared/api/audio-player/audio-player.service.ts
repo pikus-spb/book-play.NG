@@ -40,10 +40,9 @@ export class AudioPlayerService implements OnDestroy {
   public async play(): Promise<boolean | Event> {
     const reallyEnded$ = fromEvent(this.audio, 'ended');
 
-    // TODO: not used now (current voice is okay)
-    // if (!this.equalizer.applied) {
-    //   this.equalizer.equalize(this.audio);
-    // }
+    if (!this.equalizer.applied) {
+      this.equalizer.equalize(this.audio);
+    }
 
     await this.audio.play();
     this._stopped = false;

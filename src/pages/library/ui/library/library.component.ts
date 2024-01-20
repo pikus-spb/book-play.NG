@@ -1,40 +1,52 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { map, Observable, reduce, tap } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { firstValueFrom, map, Observable, Subject, tap } from 'rxjs';
 
-import { BooksApiService } from 'src/entities/books/';
-import { Events, EventsStateService } from 'src/shared/ui';
-
-import { BookDescription } from '../../model/books-model';
+import { BooksGroupComponent } from 'src/widgets/books-group';
+import { BookUtilsService } from 'src/entities/books';
+import { BooksApiService, BookDescription } from 'src/entities/books/';
+import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
 
 @Component({
   selector: 'library',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule, MaterialModule, BooksGroupComponent],
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.less'],
 })
-export class LibraryComponent {
+export class LibraryComponent implements OnDestroy {
+  private destroyed$: Subject<void> = new Subject<void>();
+  private defaultLetter = 'а';
+
+  public letters$?: Observable<string[]>;
+
   constructor(
     public api: BooksApiService,
-    private eventStates: EventsStateService
-  ) {}
+    private eventStates: EventsStateService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private bookUtils: BookUtilsService
+  ) {
+    this.loadAllLetters();
+  }
 
-  public getAllBookLetters(): Observable<Record<string, BookDescription[]>> {
+  public loadBooks(): Observable<Record<string, BookDescription[]>> {
     this.eventStates.add(Events.loading, true);
 
-    return this.api.getAll().pipe(
-      map((books: BookDescription[]) => {
-        return books.sort((a, b) => {
-          return a.authorLastName.localeCompare(b.authorLastName);
-        });
-      }),
+    let letter = this.route.snapshot.paramMap.get('letter');
+    if (!letter) {
+      letter = this.defaultLetter;
+    }
+
+    return this.api.getAuthorsByLetter(letter).pipe(
       map((books: BookDescription[]) => {
         return books.reduce(
-          (memo: Record<string, BookDescription[]>, item: BookDescription) => {
-            memo[item.authorLastName[0]] = memo[item.authorLastName[0]] || [];
-            memo[item.authorLastName[0]].push(item);
+          (memo, book) => {
+            const name = this.bookUtils.getAuthorDisplayName(book);
+
+            memo[name] = memo[name] || [];
+            memo[name].push(book);
+
             return memo;
           },
           {} as Record<string, BookDescription[]>
@@ -44,5 +56,36 @@ export class LibraryComponent {
         this.eventStates.add(Events.loading, false);
       })
     );
+  }
+
+  public async loadAllLetters() {
+    this.eventStates.add(Events.loading, true);
+
+    this.letters$ = this.api.getAllLetters().pipe(
+      map((letters: string[]) => {
+        return letters.sort((a, b) => {
+          return a.localeCompare(b);
+        });
+      }),
+      tap((letters: string[]) => {
+        this.defaultLetter = letters[0];
+      })
+    );
+
+    await firstValueFrom(this.letters$);
+    this.eventStates.add(Events.loading, false);
+  }
+
+  public isActiveLetter(value: string): boolean {
+    const letter = this.route.snapshot.paramMap.get('letter');
+    if (letter && letter.length > 0) {
+      return letter === value;
+    }
+
+    return letter === this.defaultLetter;
+  }
+
+  public ngOnDestroy() {
+    this.destroyed$.next();
   }
 }

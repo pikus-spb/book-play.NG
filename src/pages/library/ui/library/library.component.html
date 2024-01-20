@@ -4,16 +4,19 @@
     <h3>(авторы, книги)</h3>
   </h1>
 
-  <div *ngIf="this.getAllBookLetters() | async as data">
-    <section *ngFor="let section of data | keyvalue">
-      <h1 class="letter">{{ section.key }}</h1>
+  <div *ngIf="this.letters$ | async as letters" class="letters-container">
+    <h1 class="link" *ngFor="let letter of letters">
       <a
-        *ngFor="let book of section.value"
-        class="book"
-        [routerLink]="'/player/' + book.id"
-        >{{ book.authorFirstName[0] }}. {{ book.authorLastName }} -
-        {{ book.title }}</a
+        [routerLink]="'/library/' + letter"
+        [class.active]="isActiveLetter(letter)"
+        >{{ letter.toUpperCase() }}</a
       >
-    </section>
+    </h1>
+  </div>
+
+  <div *ngIf="this.loadBooks() | async as authors" class="authors-container">
+    <div *ngFor="let author of authors | keyvalue">
+      <books-group [books]="author.value"></books-group>
+    </div>
   </div>
 </div>
