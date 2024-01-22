@@ -18,7 +18,7 @@ import { ScrollPositionHelperService } from './scroll-position-helper.service';
 })
 export class DomHelperService implements OnDestroy {
   public scrolled$?: Observable<Event>;
-  private destroyed$: Subject<void> = new Subject();
+  private scrollingStopped$: Subject<void> = new Subject();
 
   constructor(
     private cursorService: CursorPositionStoreService,
@@ -26,12 +26,15 @@ export class DomHelperService implements OnDestroy {
   ) {}
 
   private attachScrollingEvent() {
-    if (viewportScroller && !this.scrolled$) {
-      this.scrolled$ = viewportScroller.scrolled$;
+    if (viewportScroller) {
+      if (this.scrolled$) {
+        this.scrollingStopped$.next();
+      }
 
+      this.scrolled$ = viewportScroller.scrolled$;
       this.scrolled$
         ?.pipe(
-          takeUntil(this.destroyed$),
+          takeUntil(this.scrollingStopped$),
           tap(() => {
             const node = this.getParagraphNode(this.cursorService.position);
             this.updateActiveCSSClass(node);
@@ -72,6 +75,6 @@ export class DomHelperService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroyed$.next();
+    this.scrollingStopped$.next();
   }
 }

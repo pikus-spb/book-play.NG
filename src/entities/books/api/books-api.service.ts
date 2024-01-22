@@ -10,7 +10,6 @@ const API_URL = protocol + '//book-play.ru:' + port;
 const RETRY_NUMBER = 3;
 
 enum RequestSuffix {
-  // all = '/get-all',
   letters = '/get-author-letters',
   byLetter = '/get-authors-by-letter/',
   byId = '/get-by-id/',
@@ -26,22 +25,6 @@ export class BooksApiService {
   >();
 
   constructor(private http: HttpClient) {}
-
-  /* @deprecated: Не использовать! (очень тяжелый метод)
-  public getAll(): Observable<BookDescription[]> {
-    if (this.requestCache.get(RequestSuffix.all) === undefined) {
-      const observable = this.http
-        .get(API_URL + RequestSuffix.all)
-        .pipe(retry(RETRY_NUMBER), shareReplay(1));
-
-      this.requestCache.set(RequestSuffix.all, observable);
-    }
-
-    return this.requestCache.get(RequestSuffix.all) as Observable<
-      BookDescription[]
-    >;
-  }
-*/
 
   public getAllLetters(): Observable<string[]> {
     if (this.requestCache.get(RequestSuffix.letters) === undefined) {

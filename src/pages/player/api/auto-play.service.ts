@@ -74,6 +74,15 @@ export class AutoPlayService implements OnDestroy {
         })
       )
       .subscribe();
+
+    this.openedBook.book$
+      .pipe(
+        takeUntilDestroyed(),
+        filter(book => Boolean(book))
+      )
+      .subscribe(() => {
+        this.domHelper.showActiveParagraph();
+      });
   }
 
   private resume(): void {
