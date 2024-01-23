@@ -9,7 +9,7 @@ import { AudioStorageService } from '../model/audio-storage.service';
 
 export const PRELOAD_EXTRA = Object.freeze({
   min: 0,
-  forInitialization: 2,
+  forInitialization: 1,
   default: 10,
 });
 
