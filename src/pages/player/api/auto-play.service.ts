@@ -123,7 +123,7 @@ export class AutoPlayService implements OnDestroy {
       }
       this.cursorService.position = index;
       this._paused$.next(false);
-      this.eventStateService.add(Events.loading, false);
+      this.eventStateService.remove(Events.loading);
 
       do {
         const isScrollingNow = await firstValueFrom(

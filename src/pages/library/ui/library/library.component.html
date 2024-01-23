@@ -4,11 +4,11 @@
     <h3>(авторы, книги)</h3>
   </h1>
 
-  <div *ngIf="this.letters$ | async as letters" class="letters-container">
+  <div *ngIf="this.loadLetters() | async as letters" class="letters-container">
     <h1 class="link" *ngFor="let letter of letters">
       <a
         [routerLink]="'/library/' + letter"
-        [class.active]="isActiveLetter(letter)"
+        [class.active]="isActiveLetter(letter) | async"
         >{{ letter.toUpperCase() }}</a
       >
     </h1>

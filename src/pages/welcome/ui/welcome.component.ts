@@ -13,6 +13,6 @@ export class WelcomeComponent {
   constructor(private eventStates: EventsStateService) {}
 
   public runFileUpload(): void {
-    this.eventStates.add(Events.runUploadFile, true);
+    this.eventStates.add(Events.runUploadFile);
   }
 }

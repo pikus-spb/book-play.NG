@@ -20,14 +20,14 @@ export class DataHelperService {
 
   public async ensureAudioDataReady() {
     if (!this.audioStorage.get(this.cursorService.position)) {
-      this.eventStateService.add(Events.loading, true);
+      this.eventStateService.add(Events.loading);
 
       await this.preloadHelper.preloadParagraph(
         this.cursorService.position,
         PRELOAD_EXTRA.min
       );
 
-      this.eventStateService.add(Events.loading, false);
+      this.eventStateService.remove(Events.loading);
     }
   }
 }

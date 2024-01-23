@@ -69,7 +69,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.autoPlay.stop();
-      this.eventStates.add(Events.loading, true);
+      this.eventStates.add(Events.loading);
       this.openedBookService.update(null);
 
       const observable = this.booksApi.getById(id).pipe(first());
@@ -83,7 +83,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
       this.domHelper.showActiveParagraph();
 
-      this.eventStates.add(Events.loading, false);
+      this.eventStates.remove(Events.loading);
     }
   }
 

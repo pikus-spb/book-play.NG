@@ -57,7 +57,7 @@ export class VoiceComponent implements AfterViewInit {
   }
 
   async voice() {
-    this.eventsState.add(Events.loading, true);
+    this.eventsState.add(Events.loading);
 
     const data = await firstValueFrom(
       this.speechService.getVoice(this.text).pipe(
@@ -68,7 +68,7 @@ export class VoiceComponent implements AfterViewInit {
     );
     this.addAudioElement(data, this.text);
 
-    this.eventsState.add(Events.loading, false);
+    this.eventsState.remove(Events.loading);
   }
 
   ngAfterViewInit() {

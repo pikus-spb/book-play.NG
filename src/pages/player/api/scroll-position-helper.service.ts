@@ -24,9 +24,9 @@ export class ScrollPositionHelperService {
 
   public async scrollToIndex(cursorIndex: number): Promise<void> {
     if (viewportScroller) {
-      this.eventStateService.add(Events.scrollingIntoView, true);
+      this.eventStateService.add(Events.scrollingIntoView);
       await firstValueFrom(viewportScroller.scrollToIndex(cursorIndex));
-      this.eventStateService.add(Events.scrollingIntoView, false);
+      this.eventStateService.remove(Events.scrollingIntoView);
     }
   }
 }

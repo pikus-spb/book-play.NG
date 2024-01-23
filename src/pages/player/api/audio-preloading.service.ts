@@ -7,11 +7,11 @@ import { SpeechService } from 'src/entities/speech';
 
 import { AudioStorageService } from '../model/audio-storage.service';
 
-export const PRELOAD_EXTRA = {
+export const PRELOAD_EXTRA = Object.freeze({
   min: 0,
-  forInitialization: 1,
-  default: 3,
-};
+  forInitialization: 2,
+  default: 10,
+});
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +45,7 @@ export class AudioPreloadingService {
 
   public async preloadParagraph(
     startIndex: number,
-    extra = PRELOAD_EXTRA.default
+    extra: number = PRELOAD_EXTRA.default
   ): Promise<void> {
     const data = this.openedBook.book?.paragraphs;
     const dataIsValid = data && data.length > 0 && startIndex >= 0;

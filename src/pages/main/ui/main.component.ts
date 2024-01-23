@@ -1,12 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NavigationEnd,
-  NavigationStart,
-  Router,
-  RouterModule,
-} from '@angular/router';
-import { filter, Observable, tap } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 import { MainHeaderComponent } from 'src/widgets/main-header';
 import { MainMenuComponent } from 'src/widgets/main-menu';
@@ -30,34 +23,6 @@ import { Events, EventsStateService, MaterialModule } from 'src/shared/ui';
   standalone: true,
 })
 export class MainComponent {
-  public loading$: Observable<boolean>;
-
-  constructor(
-    private router: Router,
-    public eventStatesService: EventsStateService
-  ) {
-    this._subscribeToRouteChange();
-    this.loading$ = eventStatesService.get$(Events.loading);
-  }
-
-  private _subscribeToRouteChange() {
-    this.router.events
-      .pipe(
-        takeUntilDestroyed(),
-        filter(event => event instanceof NavigationStart),
-        tap(() => {
-          this.eventStatesService.add(Events.loading, true);
-        })
-      )
-      .subscribe();
-    this.router.events
-      .pipe(
-        takeUntilDestroyed(),
-        filter(event => event instanceof NavigationEnd),
-        tap(() => {
-          this.eventStatesService.add(Events.loading, false);
-        })
-      )
-      .subscribe();
-  }
+  public Events = Events;
+  constructor(public eventStatesService: EventsStateService) {}
 }

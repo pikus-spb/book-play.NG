@@ -4,7 +4,7 @@
 <mat-progress-bar
   mode="indeterminate"
   [style.visibility]="
-    (loading$ | async) ? 'visible' : 'hidden'
+    (eventStatesService.get$(Events.loading) | async) ? 'visible' : 'hidden'
   "></mat-progress-bar>
 <mat-sidenav-container>
   <mat-sidenav #sidenav mode="over" autoFocus="false" (click)="sidenav.close()">
