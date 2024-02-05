@@ -49,6 +49,11 @@
         trackLinks: true,
         accurateTrackBounce: true,
       });
+
+      /* Activate screen lock */
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request();
+      }
     </script>
     <noscript
       ><div>
