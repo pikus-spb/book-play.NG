@@ -6,15 +6,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {
-  filter,
-  first,
-  firstValueFrom,
-  Observable,
-  Subject,
-  tap,
-  timer,
-} from 'rxjs';
+import { filter, first, map, Observable, Subject, tap } from 'rxjs';
 
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
@@ -57,7 +49,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
           );
         }),
         tap(async () => {
-          this.loadBookFromLibrary();
+          if (this.route.snapshot.paramMap.get('id')) {
+            this.loadBookFromLibrary();
+          } else {
+            this.domHelper.showActiveParagraph();
+          }
         })
       )
       .subscribe();
@@ -65,29 +61,27 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.book$ = this.openedBookService.book$;
   }
 
-  private async loadBookFromLibrary() {
+  private loadBookFromLibrary() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.autoPlay.stop();
       this.eventStates.add(Events.loading);
-      this.openedBookService.update(null);
 
-      const observable = this.booksApi.getById(id).pipe(first());
-      observable.subscribe(book => {
-        const bookData = this.fb2Reader.readBookFromString(book.content);
-        this.openedBookService.update(bookData);
-      });
-
-      await firstValueFrom(observable);
-      await firstValueFrom(timer(1));
-
-      this.domHelper.showActiveParagraph();
-
-      this.eventStates.remove(Events.loading);
+      this.booksApi
+        .getById(id)
+        .pipe(
+          first(),
+          map(book => this.fb2Reader.readBookFromString(book.content)),
+          tap(bookData => {
+            this.openedBookService.update(bookData);
+            this.eventStates.remove(Events.loading);
+          })
+        )
+        .subscribe();
     }
   }
 
   public playParagraph(index: number): void {
+    this.autoPlay.stop();
     this.autoPlay.start(index);
   }
 
@@ -98,6 +92,5 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._destroyed$.next();
-    this.autoPlay.ngOnDestroy();
   }
 }

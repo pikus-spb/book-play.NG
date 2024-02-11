@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { first, firstValueFrom, Observable, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  filter,
+  first,
+  firstValueFrom,
+  Observable,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 import { OpenedBookService } from 'src/features/opened-book';
 import { Base64HelperService } from 'src/entities/base64';
@@ -27,7 +35,15 @@ export class AudioPreloadingService {
     private audioStorage: AudioStorageService,
     private speechService: SpeechService,
     private base64Helper: Base64HelperService
-  ) {}
+  ) {
+    this.openedBook.book$
+      .pipe(
+        takeUntilDestroyed(),
+        filter(book => Boolean(book)),
+        tap(() => (this._initialized = false))
+      )
+      .subscribe();
+  }
 
   private fetchAudio(index: number): Observable<string> {
     return this.speechService

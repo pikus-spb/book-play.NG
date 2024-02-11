@@ -5,7 +5,7 @@ import { Observable, retry, shareReplay } from 'rxjs';
 import { BookDescription, Book } from '../model/books-model';
 
 const protocol = document.location.protocol;
-const port = protocol === 'https:' ? 8443 : 8080;
+const port = protocol === 'https:' ? 8443 : 8282;
 const API_URL = protocol + '//book-play.ru:' + port;
 const RETRY_NUMBER = 3;
 

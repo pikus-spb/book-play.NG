@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import {
   BehaviorSubject,
   debounceTime,
@@ -9,8 +9,6 @@ import {
   fromEvent,
   Observable,
   shareReplay,
-  Subject,
-  takeUntil,
   tap,
 } from 'rxjs';
 
@@ -29,8 +27,7 @@ import { ScrollPositionHelperService } from './scroll-position-helper.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AutoPlayService implements OnDestroy {
-  private destroyed$: Subject<void> = new Subject();
+export class AutoPlayService {
   private _paused$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     true
   );
@@ -51,14 +48,23 @@ export class AutoPlayService implements OnDestroy {
     private domHelper: DomHelperService,
     private preloadHelper: AudioPreloadingService
   ) {
-    this.attachEvents();
-  }
+    this.router.events
+      .pipe(
+        takeUntilDestroyed(),
+        filter(event => {
+          return event instanceof NavigationEnd;
+        }),
+        tap(async () => {
+          if (!this.router.url.match('player')) {
+            this.stop();
+          }
+        })
+      )
+      .subscribe();
 
-  public attachEvents() {
     this.cursorService.position$
       .pipe(
         takeUntilDestroyed(),
-        debounceTime(100),
         tap(async () => {
           this.domHelper.showActiveParagraph();
           this.preloadHelper.preloadParagraph(this.cursorService.position);
@@ -78,11 +84,14 @@ export class AutoPlayService implements OnDestroy {
     this.openedBook.book$
       .pipe(
         takeUntilDestroyed(),
-        filter(book => Boolean(book))
+        filter(book => Boolean(book)),
+        debounceTime(300),
+        tap(() => {
+          this.stop();
+          this.domHelper.showActiveParagraph();
+        })
       )
-      .subscribe(() => {
-        this.domHelper.showActiveParagraph();
-      });
+      .subscribe();
   }
 
   private resume(): void {
@@ -102,9 +111,6 @@ export class AutoPlayService implements OnDestroy {
 
   public toggle(): void {
     if (this.audioPlayer.paused) {
-      if (this.router.url !== '/player') {
-        this.router.navigateByUrl('/player');
-      }
       if (this.audioPlayer.stopped) {
         this.start();
       } else {
@@ -115,46 +121,41 @@ export class AutoPlayService implements OnDestroy {
     }
   }
 
-  public async start(index: number = this.cursorService.position) {
-    if (this.openedBook.book) {
-      this.audioPlayer.stop();
-      if (this.preloadingService.initialized) {
-        this.speechService.cancelAllVoiceRequests();
-      }
-      this.cursorService.position = index;
-      this._paused$.next(false);
-      this.eventStateService.remove(Events.loading, true);
-
-      do {
-        const isScrollingNow = await firstValueFrom(
-          this.eventStateService.get$(Events.scrollingIntoView)
-        );
-        if (isScrollingNow) {
-          // wait until scrolling is false
-          await firstValueFrom(
-            this.eventStateService
-              .get$(Events.scrollingIntoView)
-              .pipe(filter(value => !value))
-          );
-        }
-
-        await this.dataHelper.ensureAudioDataReady();
-
-        this.audioPlayer.setAudio(
-          this.audioStorage.get(this.cursorService.position)
-        );
-
-        if (await this.audioPlayer.play()) {
-          this.cursorService.position++;
-        }
-      } while (
-        this.scrollPositionHelper.cursorPositionIsValid() &&
-        !this.audioPlayer.stopped
-      );
+  public async start(index?: number) {
+    if (this.preloadingService.initialized) {
+      this.speechService.cancelAllVoiceRequests();
     }
-  }
+    if (index && index >= 0) {
+      this.cursorService.position = index;
+    }
+    this._paused$.next(false);
+    this.eventStateService.remove(Events.loading, true);
 
-  ngOnDestroy() {
-    this.destroyed$.next();
+    do {
+      const isScrollingNow = await firstValueFrom(
+        this.eventStateService.get$(Events.scrollingIntoView)
+      );
+      if (isScrollingNow) {
+        // wait until scrolling is false
+        await firstValueFrom(
+          this.eventStateService
+            .get$(Events.scrollingIntoView)
+            .pipe(filter(value => !value))
+        );
+      }
+
+      await this.dataHelper.ensureAudioDataReady();
+
+      this.audioPlayer.setAudio(
+        this.audioStorage.get(this.cursorService.position)
+      );
+
+      if (await this.audioPlayer.play()) {
+        this.cursorService.position++;
+      }
+    } while (
+      this.scrollPositionHelper.cursorPositionIsValid() &&
+      !this.audioPlayer.stopped
+    );
   }
 }

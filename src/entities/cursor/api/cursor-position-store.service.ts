@@ -11,7 +11,12 @@ export class CursorPositionStoreService {
   public position$: Observable<number> = this._position$.pipe(shareReplay(1));
 
   private readPosition() {
-    this.position = parseInt(localStorage.getItem(this.storageName) ?? '0');
+    const position = localStorage.getItem(this.storageName);
+    if (position !== null) {
+      this.position = Number(position);
+    } else {
+      this.position = 0;
+    }
   }
 
   setCursorName(name: string): void {
