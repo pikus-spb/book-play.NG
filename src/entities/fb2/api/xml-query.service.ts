@@ -45,10 +45,10 @@ export class XmlQueryService {
   }
 
   public getParagraphs(xml: XMLDocument, removeTags = false): string[] {
-    return Array.from(xml.documentElement?.querySelectorAll('body p')).map(
-      (item: Element) => {
+    return Array.from(xml.documentElement?.querySelectorAll('body p'))
+      .map((item: Element) => {
         return removeTags ? stripHtml(item.innerHTML).result : item.innerHTML;
-      }
-    );
+      })
+      .filter(item => item.trim().length > 0);
   }
 }

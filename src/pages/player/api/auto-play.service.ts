@@ -121,11 +121,11 @@ export class AutoPlayService {
     }
   }
 
-  public async start(index?: number) {
+  public async start(index = -1) {
     if (this.preloadingService.initialized) {
       this.speechService.cancelAllVoiceRequests();
     }
-    if (index && index >= 0) {
+    if (index >= 0) {
       this.cursorService.position = index;
     }
     this._paused$.next(false);
