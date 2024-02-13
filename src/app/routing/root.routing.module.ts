@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
+import { DEFAULT_TITLE } from 'src/entities/title';
 
 const routes: Route[] = [
   {
@@ -15,6 +16,7 @@ const routes: Route[] = [
             imported => imported.WelcomeComponent
           );
         },
+        title: DEFAULT_TITLE,
       },
       {
         path: 'player/:id',
@@ -39,6 +41,7 @@ const routes: Route[] = [
             imported => imported.VoiceComponent
           );
         },
+        title: DEFAULT_TITLE,
       },
       {
         path: 'library/:letter',
@@ -47,6 +50,7 @@ const routes: Route[] = [
             imported => imported.LibraryComponent
           );
         },
+        title: DEFAULT_TITLE,
       },
       {
         path: 'library',
@@ -55,6 +59,7 @@ const routes: Route[] = [
             imported => imported.LibraryComponent
           );
         },
+        title: DEFAULT_TITLE,
       },
       { path: '**', redirectTo: 'welcome' },
     ],

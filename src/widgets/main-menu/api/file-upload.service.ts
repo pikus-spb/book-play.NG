@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { first, tap } from 'rxjs';
+
 import { OpenedBookService } from 'src/features/opened-book';
 import { BookData, Fb2ReaderService } from 'src/entities/fb2';
 

@@ -6,12 +6,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, first, map, Observable, Subject, tap } from 'rxjs';
+import { filter, first, map, Observable, Subject, takeUntil, tap } from 'rxjs';
 
 import { BookCanvasComponent } from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
-import { BooksApiService } from 'src/entities/books/';
+import { BooksApiService, BookUtilsService } from 'src/entities/books/';
 import { BookData, Fb2ReaderService } from 'src/entities/fb2';
+import { DocumentTitleService } from 'src/entities/title';
 import { EventsStateService, Events, MaterialModule } from 'src/shared/ui';
 
 import { AutoPlayService } from '../api/auto-play.service';
@@ -37,7 +38,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private domHelper: DomHelperService,
     private booksApi: BooksApiService,
     private fb2Reader: Fb2ReaderService,
-    private eventStates: EventsStateService
+    private eventStates: EventsStateService,
+    private documentTitle: DocumentTitleService,
+    private bookUtils: BookUtilsService
   ) {
     this.router.events
       .pipe(
@@ -65,6 +68,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.eventStates.add(Events.loading);
+      this.openedBookService.update(null);
 
       this.booksApi
         .getById(id)
@@ -85,9 +89,21 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.autoPlay.start(index);
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.book$ = this.openedBookService.book$;
-    await this.loadBookFromLibrary();
+    this.loadBookFromLibrary();
+    this.book$
+      .pipe(
+        takeUntil(this._destroyed$),
+        tap(book => {
+          if (book) {
+            this.documentTitle.setContextTitle(
+              this.bookUtils.getBookFullDisplayName(book)
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
