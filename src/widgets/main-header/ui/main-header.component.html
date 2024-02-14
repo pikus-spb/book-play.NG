@@ -7,10 +7,7 @@
     (click)="menuClick.emit()">
     <mat-icon>menu</mat-icon>
   </button>
-  <img
-    src="/shared/assets/images/favicon.ico"
-    alt="Book-play.ru"
-    class="logo" />
+  <img src="favicon.ico" alt="Book-play.ru" class="logo" />
   <h1>Book-Play.Ru</h1>
   <player-button *ngIf="showPlayerButton$ | async"></player-button>
 </ng-container>

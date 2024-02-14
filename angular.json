@@ -36,7 +36,9 @@
             "inlineStyleLanguage": "less",
             "assets": [
               "src/shared/assets/fonts",
-              "src/shared/assets/images"
+              "src/shared/assets/images",
+              "src/favicon.ico",
+              "src/.htaccess"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/pink-bluegrey.css",
