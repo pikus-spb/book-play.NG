@@ -3,3 +3,6 @@
     [book$]="book$"
     (paragraphClick)="playParagraph($event)"></book-canvas>
 </ng-container>
+<ng-container *ngIf="contentLoading$ | async" class="skeleton-container">
+  <canvas-skeleton></canvas-skeleton>
+</ng-container>

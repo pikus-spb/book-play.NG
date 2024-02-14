@@ -8,7 +8,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, first, map, Observable, Subject, takeUntil, tap } from 'rxjs';
 
-import { BookCanvasComponent } from 'src/widgets/book-canvas';
+import {
+  BookCanvasComponent,
+  CanvasSkeletonComponent,
+} from 'src/widgets/book-canvas';
 import { OpenedBookService } from 'src/features/opened-book';
 import { BooksApiService, BookUtilsService } from 'src/entities/books/';
 import { BookData, Fb2ReaderService } from 'src/entities/fb2';
@@ -23,14 +26,16 @@ import { DomHelperService } from '../api/dom-helper.service';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MaterialModule, BookCanvasComponent],
+  imports: [MaterialModule, BookCanvasComponent, CanvasSkeletonComponent],
   standalone: true,
 })
 export class PlayerComponent implements OnInit, OnDestroy {
   private _destroyed$: Subject<void> = new Subject<void>();
   public book$?: Observable<BookData | null>;
+  public contentLoading$: Observable<boolean>;
 
   constructor(
+    public eventState: EventsStateService,
     private openedBookService: OpenedBookService,
     private autoPlay: AutoPlayService,
     private router: Router,
@@ -42,6 +47,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private documentTitle: DocumentTitleService,
     private bookUtils: BookUtilsService
   ) {
+    this.contentLoading$ = this.eventState.get$(Events.contentLoading);
+
     this.router.events
       .pipe(
         takeUntilDestroyed(),
@@ -69,6 +76,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     if (id) {
       this.eventStates.add(Events.loading);
       this.openedBookService.update(null);
+      this.eventStates.add(Events.contentLoading);
 
       this.booksApi
         .getById(id)
@@ -76,6 +84,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
           first(),
           map(book => this.fb2Reader.readBookFromString(book.content)),
           tap(bookData => {
+            this.eventStates.remove(Events.contentLoading);
             this.openedBookService.update(bookData);
             this.eventStates.remove(Events.loading);
           })

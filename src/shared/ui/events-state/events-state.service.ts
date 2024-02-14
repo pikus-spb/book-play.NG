@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 export enum Events {
   loading = 'loading',
+  contentLoading = 'contentLoading',
   scrollingIntoView = 'scrollingIntoView',
   runUploadFile = 'runUploadFile',
 }
