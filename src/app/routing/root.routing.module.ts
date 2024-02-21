@@ -61,7 +61,16 @@ const routes: Route[] = [
         },
         title: DEFAULT_TITLE,
       },
-      { path: '**', redirectTo: 'welcome' },
+      {
+        path: '404',
+        loadComponent() {
+          return import('src/pages/not-found').then(
+            imported => imported.NotFoundComponent
+          );
+        },
+        title: DEFAULT_TITLE,
+      },
+      { path: '**', redirectTo: '404' },
     ],
   },
 ];
