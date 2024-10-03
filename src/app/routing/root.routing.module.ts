@@ -70,6 +70,7 @@ const routes: Route[] = [
         },
         title: DEFAULT_TITLE,
       },
+      { path: '', redirectTo: '/player', pathMatch: 'full' },
       { path: '**', redirectTo: '404' },
     ],
   },
